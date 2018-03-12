@@ -6,17 +6,17 @@ Versión del proyecto de integrador (Backend)
 
 Para el Frontend
 
--Angular 5
--Materialize
--TypeScript
--Libreria Jquery
--HammerJS
+- Angular 5
+- Materialize
+- TypeScript
+- Libreria Jquery
+- HammerJS
 
 Para el Backend.
 
--NodeJS
--Express
--MongoBD
+- NodeJS
+- Express
+- MongoBD
 
 Frameworks y Librerias adicionales.
 
