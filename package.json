@@ -1,0 +1,29 @@
+{
+  "name": "uscores",
+  "version": "1.0.0",
+  "description": "Aplicacion web para ver información relacionada a los torneos deportivos de la universidad",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joseda77/UScores.git"
+  },
+  "author": "Jose David Tello, Leon Dario Arango, Jaidiber Vanegas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joseda77/UScores/issues"
+  },
+  "homepage": "https://github.com/joseda77/UScores#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "ejs": "^2.5.7",
+    "express": "*",
+    "mongoose": "*"
+  },
+  "devDependencies": {
+    "nodemon": "*"
+  }
+}
