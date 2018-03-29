@@ -9,7 +9,7 @@ const usuarioRoutes = require('./routes/usuarios.server.routes');
 const torneoRoutes = require('./routes/torneos.server.routes');
 const participaRoutes = require('./routes/participantes.server.routes');
 const connectBD = require("./server/connection.server");
-const indexRoutes = require("./routes/index");
+//const indexRoutes = require("./routes/index");
 
 //Instancia del framework Express
 const app = express();
@@ -27,10 +27,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 //Routes
-app.use(indexRoutes);
+//app.use(indexRoutes);
 app.use(usuarioRoutes);
 app.use(torneoRoutes);
 app.use(participaRoutes);
+
+//Static files
+app.use(express.static(PATH.join(__dirname,'dist')));
 
 //Realiza la conexión
 server.listen(port,function(){
