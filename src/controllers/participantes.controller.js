@@ -19,7 +19,6 @@ var getParticipante = function (req,res, next){
         if(err){
             return next(err);
         }else{
-            console.log(participantesMod);//-------------------------------------------
             res.json(participantesMod);
         }
     })
@@ -29,10 +28,9 @@ var getParticipante = function (req,res, next){
 //Nota: cambiar la palabra crear por agregar
 var createParticipantes = function(req, res, next){
     var participantesMod = new participantesModel({
-        identificacion: req.params.identificacion, //cambiar params por body en caso de que no de
-        nombreParticipante: req.params.nombreParticipante
+        identificacion: req.body.identificacion, 
+        nombreParticipante: req.body.nombreParticipante
     });
-
     participantesMod.save(function(err){
         if(err){
             return next(err)
@@ -48,14 +46,14 @@ var createParticipantes = function(req, res, next){
 var updateParticipante = function(req, res, next){
     idParticipante = req.params.identificacion;
     participantesModel.findOne({ identificacion: idParticipante}, function(err, participantesMod){
-        participantesMod.identificacion = req.params.identificacion;
-        participantesMod.nombreParticipante = req.params.nombreParticipante;
-
+        participantesMod.identificacion = req.body.identificacion;
+        participantesMod.nombreParticipante = req.body.nombreParticipante;
         participantesMod.save(function(err){
             if (err){
                 console.log("EL ERROR DE ACTUALIZAR PARTICIPANTE ",err);//--------------------------------------
                return next(err); 
             }else{
+                res.json(participantesMod);
                 console.log("Participante actualizado satisfactoriamente");
             }
         });
@@ -70,6 +68,7 @@ var deleteParticipante = function(req, res, next){
                 console.log("ERROR AL BORRAR PARTICIPANTE",err);
                 return next(err);
             } else {
+                res.json(participantesMod);
                 console.log("Participante borrado satisfactoriamente");
             }
         });

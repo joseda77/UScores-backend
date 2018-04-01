@@ -1,25 +1,49 @@
-<div class="row">
-  <div class="col s12 m5">
-    <div class="card-panel teal">
-      <span class="white-text">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Item Name</th>
-              <th>Item Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let a of login">
-              <td >{{a.nombreUsuario}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </span>
-    </div>
-  </div>
+<div class="Login" background="red">
+    <div class="row">
+        <form class="col s12" (submit)="addUsuario($event)">
+            <div class="input-field col s6">
+              <input placeholder="Nombre Usuario" name="usuario" [(ngModel)]="usuario" id="first_name" type="text" class="validate">
+              <label for="first_name">Nombre Usuario</label>
+            </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input name="password" [(ngModel)]="password" id="password" type="password" class="validate" >
+              <label for="password">Password</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input name="email" [(ngModel)]="email" id="email" type="email" class="validate">
+              <label for="email">Email</label>
+            </div>
+          </div>
+          <button class="btn waves-effect waves-light" (click)="updateUser($event)">Update
+          </button>
+          <button class="btn waves-effect waves-light" type="submit" name="action">Crear
+            </button>
+        </form>
+      </div>     
 </div>
-<div>
-  Aqui todo  lo del menu de login
+
+<div >
+  <table>
+    <thead>
+      <tr>
+          <th>Nombre de Usuario</th>
+          <th>Contraseña</th>
+          <th>Correo</th>
+      </tr>
+    </thead>
+    
+    <tbody >
+      <tr *ngFor="let user of user">
+        <td>{{user.nombreUsuario}}</td>
+        <td>{{user.password}}</td>
+        <td>{{user.email}}</td>
+        <td><button (click)="updateUser(user.nombreUsuario)"><i>Borrar</i></button></td>
+        <td><button (click)="deleteUser(user.nombreUsuario)"><i>Borrar</i></button></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
+

@@ -1,7 +1,7 @@
 const cors = require('cors');
 const express =  require('express');
 const PATH = require('path');
-const port = process.env.port || '8080';
+const port = process.env.port || '3200';
 const ejs = require('ejs'); // Para ejecutar y renderizar vistas html
 
 //Variables de llamados a modulos

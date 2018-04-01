@@ -6,7 +6,7 @@ const app = express.Router();
 
 app.get('/participantes', participantesController.getListParticipantes);
 app.get('/participantes/:identificacion', participantesController.getParticipante);
-app.post('/partipantes', participantesController.createParticipantes);
+app.post('/participantes', participantesController.createParticipantes);
 app.put('/participantes/:identificacion',participantesController.updateParticipante);
 app.delete('/participantes/:identificacion',participantesController.deleteParticipante);
 

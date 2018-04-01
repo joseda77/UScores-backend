@@ -28,10 +28,10 @@ var getTorneo = function(req, res, next){
 /* Crea todos los torneos  */
 var createTorneo = function(req, res, next){
     var torneosMod =new torneosModel({
-        codigoTorneo: req.params.codigoTorneo,
-        nombreTorneo: req.params.nombreTorneo,
-        tipoTorneo: req.params.tipoTorneo,
-        participantes: req.params.participantes
+        codigoTorneo: req.body.codigoTorneo,
+        nombreTorneo: req.body.nombreTorneo,
+        tipoTorneo: req.body.tipoTorneo,
+        participantes: [] //Cambiar esto por null en caso de que no funcione
     });
 
     torneosMod.save(function(err){
@@ -49,9 +49,9 @@ var createTorneo = function(req, res, next){
 var updateTorneo = function(req, res, next){
     idTorneo = req.params.codigoTorneo;
     torneosModel.findOne({ codigoTorneo: idTorneo},function(err, torneosMod){
-        torneosMod.nombreTorneo = req.params.nombreTorneo;
-        torneosMod.tipoTorneo = req.params.tipoTorneo;
-        torneosMod.participantes = req.params.participantes;
+        torneosMod.nombreTorneo = req.body.nombreTorneo;
+        torneosMod.tipoTorneo = req.body.tipoTorneo;
+        torneosMod.participantes = req.body.participantes;
 
         //Mirar si esta linea va por fuera del findOne---------------------------------------
         torneosMod.save(function(err){
@@ -59,6 +59,7 @@ var updateTorneo = function(req, res, next){
                 console.log("ERROR AL ACTUALIZAR EL TORNEO",err);//------------------------------------------
                 return next(err);
             } else {
+                res.json(torneosMod);
                 console.log("TORNEO ACTUALIZADO CORRECTAMENTE");//---------------------------------
             }
         });
@@ -72,12 +73,12 @@ var deleteTorneo = function(req, res, next){
     torneosModel.findOne({ codigoTorneo: idTorneo}, function(err, torneosMod){
         torneosMod.remove(function(err){
             if (err) {
-                console.log("ERROR AL BORRAR EL TORNEO", err); //------------------------------------------
-                return next(err);
+                 return next(err);
             } else {
+                res.json(torneosMod);
                 console.log("TORNEO BORRADO CORRECTAMENTE"); //------------------------------------------
             }
-        })
+        });
     });
 };
 

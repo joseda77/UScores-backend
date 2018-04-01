@@ -8,6 +8,9 @@ var participanteSchema = new Schema({
       required: true
     },
     'nombreParticipante': String
+  },
+  { // Revisar para que sirve la versionKey exactamente en mongo
+    versionKey: false
   });
 
   module.exports = mongoose.model('participantes',participanteSchema);

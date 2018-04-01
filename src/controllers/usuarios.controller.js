@@ -6,7 +6,8 @@ let nombreUser = null;
 var getListUsuarios = function(req, res , next){
     usuariosModel.find(function(err, usuariosMod){
         if(err){
-            return next(err);
+            res.status(500).json({errmsg: err});
+            //return next(err);
         }else{
             res.json(usuariosMod);
         }
@@ -18,7 +19,8 @@ var getUsuario = function(req, res, next){
     nombreUser = req.params.nombreUsuario;
     usuariosModel.findOne({ nombreUsuario: nombreUser },function(err, usuariosMod){
         if (err) {
-            return next(err);
+            res.status(500).json({errmsg: err});
+            //return next(err);
         } else {
             res.json(usuariosMod);
         }
@@ -28,16 +30,17 @@ var getUsuario = function(req, res, next){
 /* Crea el usuario */
 var createUsuarios = function(req, res){
     var usuariosMod = new usuariosModel({
-        nombreUsuario: req.params.nombreUsuario,
-        email: req.params.email,
-        password: req.params.password,
-        torneosCreados: [],
+        nombreUsuario: req.body.nombreUsuario,
+        email: req.body.email,
+        password: req.body.password,
+        torneosCreados: [], //Cambiar esto por null en caso de que no funcione
         torneosFavoritos: []//Cambiar esto por null en caso de que no funcione
     }) ;
 
     usuariosMod.save(function(err,next) {
       if (err) {
-        return next(err);
+        //return next(err);
+        res.status(500).json({errmsg: err});
       } else {
         console.log("Usuario guardado satisfactoriamente"); //-------------------------
       }
@@ -46,19 +49,20 @@ var createUsuarios = function(req, res){
     res.send(usuariosMod);
 };
 
-/* Actualiza los datos del usuario*/
+/* Actualiza los datos del usuario*/ ////Puede tener fallos por el params, cambiarlo por body
 var updateUsuario = function(req, res, next){
     nombreUser = req.params.nombreUsuario;
     usuariosModel.findOne({ nombreUsuario: nombreUser },function(err, usuariosMod){
-        usuariosMod.email = req.params.email;
-        usuariosMod.password = req.params.password;
-
+        usuariosMod.email = req.body.email;
+        usuariosMod.password = req.body.password;
         //Revisar si esta linea puede ir por fuera del findOne --------------------------------
-        usuariosMod.save(function(err, next) {
+        usuariosMod.save(function(err, next) {            
           if (err) {
               console.log("EL ERROR DE ACTUALIZAR USUARIOS ",err);//--------------------------------------
-            return next(err);
+              res.status(500).json({errmsg: err});
+              //return next(err);
           } else {
+              res.json(usuariosMod);
             console.log("Datos del usuario actualizados satisfactoriamente"); //-------------------------
           }
         });
@@ -73,6 +77,7 @@ var deleteUsuario = function(req, res ,next){
             if(err){
                 return next(err);
             }else{
+                res.json(usuariosMod);
                 console.log("Usuario Borrados satisfactoriamente");//-----------------------------------
             }
         });

@@ -15,13 +15,17 @@ var torneoSchema = new Schema({
       required: true
     },
     'tipoTorneo': {
-      type: Number,
+      type: String,///Mirar bien si se deja con number o no-------------
       required: true
     },
     'participantes': {
       type: arrParticipantes,
       required: true
     }
+  }
+  ,
+  { // Revisar para que sirve la versionKey exactamente en mongo
+    versionKey: false
   });
 
   module.exports = mongoose.model('torneos',torneoSchema);
