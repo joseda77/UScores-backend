@@ -16,20 +16,21 @@ export class UsuariosService {
   }
 
   /* Metodo que le envia datos para la creación de usuarios a node */
-  createUser(newUser: User){
+  createUser(newUser: User) {
     return this.http.post<User>(`${this.domain}/usuarios`, newUser)
     .map(res => res);
   }
 
   /* Metodo que indica que usuario debe borrar a node */
-  deleteUser(nombreUsuario){
+  deleteUser(nombreUsuario) {
     return this.http.delete<User>(`${this.domain}/usuarios/${nombreUsuario}`)
     .map(res => res);
   }
 
   /* Metodo que indica que campos actualizar a node */
-  updateUser(newUser){
-    return this.http.put<User>(`${this.domain}/usuarios/${newUser.nombreUsuario}`,newUser)
+  updateUser(newUser) {
+    console.log(newUser);
+    return this.http.put<User>(`${this.domain}/usuarios/${newUser.nombreUsuario}`, newUser)
     .map(res => res);
   }
 }

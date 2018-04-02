@@ -22,7 +22,7 @@
           <button class="btn waves-effect waves-light" type="submit" name="action">Crear
             </button>
         </form>
-      </div>     
+      </div>
 </div>
 
 <div >
@@ -34,16 +34,31 @@
           <th>Correo</th>
       </tr>
     </thead>
-    
+
     <tbody >
-      <tr *ngFor="let user of user">
-        <td>{{user.nombreUsuario}}</td>
-        <td>{{user.password}}</td>
-        <td>{{user.email}}</td>
-        <td><button (click)="updateUser(user.nombreUsuario)"><i>Borrar</i></button></td>
-        <td><button (click)="deleteUser(user.nombreUsuario)"><i>Borrar</i></button></td>
+      <tr *ngFor="let i of user">
+        <td>{{i.nombreUsuario}}</td>
+        <td>{{i.password}}</td>
+        <td>{{i.email}}</td>
+        <td><button onclick="mostrarDialogo()"><i>Update</i></button></td>
+        <td><button (click)="deleteUser(i.nombreUsuario)"><i>Borrar</i></button></td>
       </tr>
     </tbody>
   </table>
+
 </div>
 
+
+<!--form action="" id="form" style="display: none;">
+  <input>
+  <input>
+  <input>
+  <button (click)="updateUser()"> Actualizar</button>
+</form>
+
+<script>
+  var form = document.getElementById('form');
+  function mostrarDialogo() {
+    form.style.display = 'none';
+  }
+</script-->

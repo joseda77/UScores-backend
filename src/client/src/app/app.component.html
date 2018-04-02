@@ -3,13 +3,13 @@
     <a href="#" class="brand-logo">Logo</a>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
       <li>
-        <a href="app-competitor">Inicio</a>
+        <a href="/usuarios">Usuarios</a>
       </li>
       <li>
-        <a href="">Pruebas</a>
+        <a href="/torneos">Torneos</a>
       </li>
       <li>
-        <a href="user.component.html">Login</a>
+        <a href="/participantes">Participantes</a>
       </li>
     </ul>
   </div>
@@ -22,10 +22,7 @@
         <!-- Grey navigation panel -->
       </div>
       <div class="col s9">
-        <!-- Teal page content  -->
-        <!--app-competitor></app-competitor-->
-        <app-user></app-user>
-        <!--app-tournament></app-tournament-->
+        <router-outlet></router-outlet>
       </div>
     </div>
   </div>
