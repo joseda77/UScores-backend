@@ -1,20 +1,22 @@
 <div class="Login" background="red">
   <div class="row">
-      <form class="col s12" (submit)="createCompetitor($event)">
+      <form class="col s12" >
           <div class="input-field col s6">
-            <input placeholder="Codigo" name="identificacion" [(ngModel)]="identificacion" id="first_name" type="text" class="validate">
+            <input placeholder="Codigo" name="identificacion" [(ngModel)]="datosCompetitor.identificacion" id="first_name" type="text" class="validate">
             <label for="codigo">Identificacion</label>
           </div>
         <div class="row">
           <div class="input-field col s12">
-            <input name="name" [(ngModel)]="nombreParticipante" id="nombreParticipante" type="text" class="validate">
+            <input name="name" [(ngModel)]="datosCompetitor.nombreParticipante" id="nombreParticipante" type="text" class="validate">
             <label for="tipo">Nombre Participante</label>
           </div>
         </div>
-        <button class="btn waves-effect waves-light" type="submit" name="action">Crear
+        <button class="btn waves-effect waves-light" (click)="updateCompetitor(datosCompetitor)" name="action">Actualizar
+        </button>
+        <button class="btn waves-effect waves-light" (click)="createCompetitor($event)" name="action">Crear
           </button>
       </form>
-    </div>     
+    </div>
 </div>
 
 <div >
@@ -26,7 +28,7 @@
         <th>Tipo de torneo</th>
     </tr>
   </thead>
-  
+
   <tbody >
     <tr *ngFor="let i of competitor">
       <td>{{i.identificacion}}</td>

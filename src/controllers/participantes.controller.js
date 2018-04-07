@@ -44,7 +44,7 @@ var createParticipantes = function(req, res, next){
 
 /* Actualiza los datos de un participante */
 var updateParticipante = function(req, res, next){
-    idParticipante = req.params.identificacion;
+    idParticipante = req.body.identificacion;
     participantesModel.findOne({ identificacion: idParticipante}, function(err, participantesMod){
         participantesMod.identificacion = req.body.identificacion;
         participantesMod.nombreParticipante = req.body.nombreParticipante;

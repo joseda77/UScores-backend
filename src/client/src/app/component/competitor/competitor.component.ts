@@ -9,11 +9,13 @@ import { Competitor } from '../../class/Competitor';
 })
 export class CompetitorComponent implements OnInit {
   competitor: Competitor[];
-  identificacion: String;
-  nombreParticipante: String;
+  datosCompetitor: Competitor = {
+    identificacion: '',
+    nombreParticipante: ''
+  };
 
   constructor(private competitorService: ParticipantesService) {
-    this.competitorService.getCompetitor().subscribe(competitor => 
+    this.competitorService.getCompetitor().subscribe(competitor =>
     this.competitor = competitor);
    }
 
@@ -21,35 +23,46 @@ export class CompetitorComponent implements OnInit {
   }
 
   /* Le lleva los datos al servicio para crear un participante */
-  createCompetitor(event){
+  createCompetitor(event) {
     event.preventDefault();
-    const nuevoParticipante: Competitor= {
-      identificacion: this.identificacion,
-      nombreParticipante: this.nombreParticipante,
-      isDone: false
-    }
+    const nuevoParticipante: Competitor = {
+      identificacion: this.datosCompetitor.identificacion,
+      nombreParticipante: this.datosCompetitor.nombreParticipante
+    };
     this.competitorService.createCompetitor(nuevoParticipante)
-    .subscribe(participates => {this.competitor.push(participates)});
-    this.identificacion ='';
-    this.nombreParticipante= '';
+    .subscribe(participates => {this.competitor.push(participates); });
+    this.datosCompetitor.identificacion = '';
+    this.datosCompetitor.nombreParticipante = '';
   }
 
-  deleteCompetitor(identi){
-    const msgConfirmacion = confirm("Esta seguro de eliminar el participante");
-    if( msgConfirmacion == true){
+  deleteCompetitor(identi) {
+    const msgConfirmacion = confirm('Esta seguro de eliminar el participante');
+    if ( msgConfirmacion === true) {
       const arrayCompetitor = this.competitor;
       this.competitorService.deleteCompetitor(identi).subscribe(data => {
-        if(data.n = 1 ){
+        if (data.n = 1 ) {
           for (let i = 0; i < arrayCompetitor.length; i++) {
-            if(arrayCompetitor[i].identificacion == identi){
-              arrayCompetitor.splice(i,1);
-            }            
+            if (arrayCompetitor[i].identificacion === identi) {
+              arrayCompetitor.splice(i, 1);
+            }
           }
         }
       });
-    }else{
+    } else {
       return;
     }
+  }
+
+  updateCompetitor(participante: Competitor) {
+    const newParticipante = {
+      identificacion: participante.identificacion,
+      nombreParticipante: participante.nombreParticipante
+    };
+    this.competitorService.updateCompetitor(newParticipante).subscribe( res =>
+      console.log('Competidor actualizado correctamente') // ----------------------------------------------
+    );
+    this.datosCompetitor.identificacion = '';
+    this.datosCompetitor.nombreParticipante = '';
   }
 
 }

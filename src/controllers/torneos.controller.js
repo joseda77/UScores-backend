@@ -47,13 +47,11 @@ var createTorneo = function(req, res, next){
 
 /* Actualiza los datos de un torneo */
 var updateTorneo = function(req, res, next){
-    idTorneo = req.params.codigoTorneo;
+    idTorneo = req.body.codigoTorneo;
     torneosModel.findOne({ codigoTorneo: idTorneo},function(err, torneosMod){
         torneosMod.nombreTorneo = req.body.nombreTorneo;
         torneosMod.tipoTorneo = req.body.tipoTorneo;
         torneosMod.participantes = req.body.participantes;
-
-        //Mirar si esta linea va por fuera del findOne---------------------------------------
         torneosMod.save(function(err){
             if (err) {
                 console.log("ERROR AL ACTUALIZAR EL TORNEO",err);//------------------------------------------
@@ -67,7 +65,6 @@ var updateTorneo = function(req, res, next){
 };
 
 /* Borra un torneo de la BD*/
-
 var deleteTorneo = function(req, res, next){
     idTorneo = req.params.codigoTorneo;
     torneosModel.findOne({ codigoTorneo: idTorneo}, function(err, torneosMod){

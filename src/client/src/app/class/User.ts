@@ -4,7 +4,5 @@ export class User {
     email: String;
     torneosCreados: String[];
     torneosFavoritos: String[];
-    isDone: Boolean;
     n?: number; /*Sirve para saber cuantos datos se esta eliminando*/
    }
-   

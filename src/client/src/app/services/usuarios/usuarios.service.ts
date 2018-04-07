@@ -29,7 +29,6 @@ export class UsuariosService {
 
   /* Metodo que indica que campos actualizar a node */
   updateUser(newUser) {
-    console.log(newUser);
     return this.http.put<User>(`${this.domain}/usuarios/${newUser.nombreUsuario}`, newUser)
     .map(res => res);
   }

@@ -51,11 +51,10 @@ var createUsuarios = function(req, res){
 
 /* Actualiza los datos del usuario*/ ////Puede tener fallos por el params, cambiarlo por body
 var updateUsuario = function(req, res, next){
-    nombreUser = req.params.nombreUsuario;
-    usuariosModel.findOne({ nombreUsuario: nombreUser },function(err, usuariosMod){
+    nombreUser = req.body.nombreUsuario;
+    usuariosModel.findOne({ nombreUsuario: nombreUser },function(err, usuariosMod){ 
         usuariosMod.email = req.body.email;
         usuariosMod.password = req.body.password;
-        //Revisar si esta linea puede ir por fuera del findOne --------------------------------
         usuariosMod.save(function(err, next) {            
           if (err) {
               console.log("EL ERROR DE ACTUALIZAR USUARIOS ",err);//--------------------------------------
