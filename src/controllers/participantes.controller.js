@@ -28,8 +28,10 @@ var getParticipante = function (req,res, next){
 //Nota: cambiar la palabra crear por agregar
 var createParticipantes = function(req, res, next){
     var participantesMod = new participantesModel({
-        identificacion: req.body.identificacion, 
-        nombreParticipante: req.body.nombreParticipante
+      identificacion: req.body.identificacion,
+      nombreParticipante: req.body.nombreParticipante,
+      puntosAnotados: null, // En caso de que null no funcione, dejar el campo vacio o no llevarle nada
+      penalizaciones: null // En caso de que null no funcione, dejar el campo vacio o no llevarle nada
     });
     participantesMod.save(function(err){
         if(err){
@@ -48,6 +50,8 @@ var updateParticipante = function(req, res, next){
     participantesModel.findOne({ identificacion: idParticipante}, function(err, participantesMod){
         participantesMod.identificacion = req.body.identificacion;
         participantesMod.nombreParticipante = req.body.nombreParticipante;
+        participantesMod.puntosAnotados = req.body.puntosAnotados;
+        participantesMod.penalizaciones = req.body.penalizaciones;
         participantesMod.save(function(err){
             if (err){
                 console.log("EL ERROR DE ACTUALIZAR PARTICIPANTE ",err);//--------------------------------------

@@ -9,13 +9,13 @@ import { Tournament } from '../../class/Tournament';
 })
 export class TournamentComponent implements OnInit {
   tournament: Tournament[];
-  /*codigoTorneo: String;
-  nombreTorneo: String;*/
   datosTorneo: Tournament = {
     codigoTorneo: '',
     nombreTorneo: '',
-    tipoTorneo: '',
-    participantes: []
+    deporte: '',
+    tipoTorneo: 0,
+    listaEquipos: [],
+    listaPartidos: []
   };
 
   constructor(private tournamentService: TorneosService) {
@@ -32,15 +32,19 @@ export class TournamentComponent implements OnInit {
     const nuevoTorneo: Tournament = {
       codigoTorneo: this.datosTorneo.codigoTorneo,
       nombreTorneo: this.datosTorneo.nombreTorneo,
-      tipoTorneo: this.datosTorneo.tipoTorneo,
-      participantes: null, // Recordar enviarle el arreglo ------------------------------
+      deporte: this.datosTorneo.deporte,
+      tipoTorneo: this.datosTorneo.tipoTorneo, // Forma de convertirlo a number
+      listaEquipos: [], // Recordar enviarle el arreglo ------------------------------
+      listaPartidos: [] // Recordar enviarle el arreglo ------------------------------
     };
 
     this.tournamentService.createTournament(nuevoTorneo).subscribe(torneos => {this.tournament.push(torneos); });
     this.datosTorneo.codigoTorneo = '';
     this.datosTorneo.nombreTorneo = '';
-    this.datosTorneo.tipoTorneo = '';
-    this.datosTorneo.participantes = null; // Cambiarlo por el arreglo de participante que se traiga
+    this.datosTorneo.deporte = '';
+    this.datosTorneo.tipoTorneo = 0;
+    this.datosTorneo.listaEquipos = []; // Cambiarlo por el arreglo de participante que se traiga
+    this.datosTorneo.listaPartidos = []; // Cambiarlo por el arreglo de participante que se traiga
   }
 
   deleteTournament(codeTournament) {
@@ -64,10 +68,12 @@ export class TournamentComponent implements OnInit {
   updateTournament(torneo: Tournament) {
     console.log('Entra en el update', torneo); // -----------------------------------------------------------
     const newTorneo = {
-      codigoTorneo: torneo.codigoTorneo,
+      codigoTorneo: torneo.codigoTorneo, // Mirar si el codigo del torneo se puede actualizar o no
       nombreTorneo: torneo.nombreTorneo,
+      deporte: torneo.deporte,
       tipoTorneo: torneo.tipoTorneo,
-      participantes: 'Luchito' // Cambiar  por los participantes, Arreglo----------------------------------------------------
+      listaEquipos: [], // Cambiar  por los Equipos, Arreglo----------------------------------------------------
+      listaPartidos: []  // Cambiar  por los Equipos, Arreglo----------------------------------------------------
     };
 
     this.tournamentService.updateTournament(newTorneo).subscribe(res =>
@@ -75,8 +81,10 @@ export class TournamentComponent implements OnInit {
       );
     this.datosTorneo.codigoTorneo = '';
     this.datosTorneo.nombreTorneo = '';
-    this.datosTorneo.tipoTorneo = '';
-    this.datosTorneo.participantes = null; // Cambiarlo por el arreglo de participante que se traiga
+    this.datosTorneo.deporte = '';
+    this.datosTorneo.tipoTorneo = 0;
+    this.datosTorneo.listaEquipos = null; // Cambiarlo por el arreglo de participante que se traiga
+    this.datosTorneo.listaPartidos = null; // Cambiarlo por el arreglo de participante que se traiga
   }
 
 }

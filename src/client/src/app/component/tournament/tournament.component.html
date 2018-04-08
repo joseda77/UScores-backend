@@ -1,7 +1,7 @@
 <div class="Login" background="red">
   <div class="row">
       <form class="col s12" >
-          <div class="input-field col s6">
+          <div class="input-field col s12">
             <input placeholder="Codigo" name="codigoTorneo" [(ngModel)]="datosTorneo.codigoTorneo" id="first_name" type="text" class="validate">
             <label for="codigo">CodigoTorneo</label>
           </div>
@@ -9,6 +9,12 @@
           <div class="input-field col s12">
             <input name="password" [(ngModel)]="datosTorneo.nombreTorneo" id="nombreTorneo" type="text" class="validate" >
             <label for="name">Name torneo</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input name="Deporte" [(ngModel)]="datosTorneo.deporte" id="deporte" type="text" class="validate">
+            <label for="tipo">Deporte</label>
           </div>
         </div>
         <div class="row">

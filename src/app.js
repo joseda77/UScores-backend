@@ -8,9 +8,9 @@ const ejs = require('ejs'); // Para ejecutar y renderizar vistas html
 const usuarioRoutes = require('./routes/usuarios.server.routes');
 const torneoRoutes = require('./routes/torneos.server.routes');
 const participaRoutes = require('./routes/participantes.server.routes');
+const equipoRoutes = require('./routes/equipos.server.routes');
+const encuentrosRoutes = require('./routes/encuentros.server.routes');
 const connectBD = require("./server/connection.server");
-//const indexRoutes = require("./routes/index");
-
 //Instancia del framework Express
 const app = express();
 const server = require('http').Server(app); //Para comunicar http con el servidor
@@ -27,10 +27,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 //Routes
-//app.use(indexRoutes);
 app.use(usuarioRoutes);
 app.use(torneoRoutes);
 app.use(participaRoutes);
+app.use(equipoRoutes);
+app.use(encuentrosRoutes);
 
 //Static files
 app.use(express.static(PATH.join(__dirname,'dist')));

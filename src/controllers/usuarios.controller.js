@@ -7,7 +7,6 @@ var getListUsuarios = function(req, res , next){
     usuariosModel.find(function(err, usuariosMod){
         if(err){
             res.status(500).json({errmsg: err});
-            //return next(err);
         }else{
             res.json(usuariosMod);
         }
@@ -20,7 +19,6 @@ var getUsuario = function(req, res, next){
     usuariosModel.findOne({ nombreUsuario: nombreUser },function(err, usuariosMod){
         if (err) {
             res.status(500).json({errmsg: err});
-            //return next(err);
         } else {
             res.json(usuariosMod);
         }
@@ -39,7 +37,6 @@ var createUsuarios = function(req, res){
 
     usuariosMod.save(function(err,next) {
       if (err) {
-        //return next(err);
         res.status(500).json({errmsg: err});
       } else {
         console.log("Usuario guardado satisfactoriamente"); //-------------------------
@@ -49,7 +46,7 @@ var createUsuarios = function(req, res){
     res.send(usuariosMod);
 };
 
-/* Actualiza los datos del usuario*/ ////Puede tener fallos por el params, cambiarlo por body
+/* Actualiza los datos del usuario*/ 
 var updateUsuario = function(req, res, next){
     nombreUser = req.body.nombreUsuario;
     usuariosModel.findOne({ nombreUsuario: nombreUser },function(err, usuariosMod){ 
@@ -59,7 +56,6 @@ var updateUsuario = function(req, res, next){
           if (err) {
               console.log("EL ERROR DE ACTUALIZAR USUARIOS ",err);//--------------------------------------
               res.status(500).json({errmsg: err});
-              //return next(err);
           } else {
               res.json(usuariosMod);
             console.log("Datos del usuario actualizados satisfactoriamente"); //-------------------------
@@ -74,7 +70,7 @@ var deleteUsuario = function(req, res ,next){
     usuariosModel.findOne({ nombreUsuario: nombreUser },function(err, usuariosMod){
         usuariosMod.remove(function(err){
             if(err){
-                return next(err);
+                res.status(500).json({ errmsg: err });
             }else{
                 res.json(usuariosMod);
                 console.log("Usuario Borrados satisfactoriamente");//-----------------------------------

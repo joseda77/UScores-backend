@@ -11,6 +11,18 @@
             <label for="tipo">Nombre Participante</label>
           </div>
         </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input name="name" [(ngModel)]="datosCompetitor.puntosAnotados" id="puntosAnotados" type="text" class="validate">
+            <label for="tipo">Puntos Anotados</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input name="name" [(ngModel)]="datosCompetitor.penalizaciones" id="penalizaciones" type="text" class="validate">
+            <label for="tipo">Penalizaciones</label>
+          </div>
+        </div>
         <button class="btn waves-effect waves-light" (click)="updateCompetitor(datosCompetitor)" name="action">Actualizar
         </button>
         <button class="btn waves-effect waves-light" (click)="createCompetitor($event)" name="action">Crear

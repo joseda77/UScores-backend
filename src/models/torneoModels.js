@@ -2,7 +2,8 @@
 const mongoose = require('mongoose'); 
 const Schema = mongoose.Schema;
 
-var arrParticipantes = [];
+var arrEquipos = [];
+var arrPartidos = [];
 
 var torneoSchema = new Schema({
     'codigoTorneo': {
@@ -14,13 +15,20 @@ var torneoSchema = new Schema({
       type: String,
       required: true
     },
-    'tipoTorneo': {
-      type: String,///Mirar bien si se deja con number o no-------------
+    'deporte':{
+      type: String,
       required: true
     },
-    'participantes': {
-      type: arrParticipantes,
+    'tipoTorneo': {
+      type: Number,
       required: true
+    },
+    'listaEquipos': {
+      type: arrEquipos,
+      required: true
+    },
+    'listaPartidos':{
+      type: arrPartidos
     }
   }
   ,

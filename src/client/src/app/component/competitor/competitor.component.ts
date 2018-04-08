@@ -11,7 +11,9 @@ export class CompetitorComponent implements OnInit {
   competitor: Competitor[];
   datosCompetitor: Competitor = {
     identificacion: '',
-    nombreParticipante: ''
+    nombreParticipante: '',
+    puntosAnotados: '',
+    penalizaciones: ''
   };
 
   constructor(private competitorService: ParticipantesService) {
@@ -27,12 +29,16 @@ export class CompetitorComponent implements OnInit {
     event.preventDefault();
     const nuevoParticipante: Competitor = {
       identificacion: this.datosCompetitor.identificacion,
-      nombreParticipante: this.datosCompetitor.nombreParticipante
+      nombreParticipante: this.datosCompetitor.nombreParticipante,
+      puntosAnotados: null,
+      penalizaciones: null
     };
     this.competitorService.createCompetitor(nuevoParticipante)
     .subscribe(participates => {this.competitor.push(participates); });
     this.datosCompetitor.identificacion = '';
     this.datosCompetitor.nombreParticipante = '';
+    this.datosCompetitor.puntosAnotados = '';
+    this.datosCompetitor.penalizaciones = '';
   }
 
   deleteCompetitor(identi) {
@@ -56,13 +62,17 @@ export class CompetitorComponent implements OnInit {
   updateCompetitor(participante: Competitor) {
     const newParticipante = {
       identificacion: participante.identificacion,
-      nombreParticipante: participante.nombreParticipante
+      nombreParticipante: participante.nombreParticipante,
+      puntosAnotados: participante.puntosAnotados,
+      penalizaciones: participante.penalizaciones
     };
     this.competitorService.updateCompetitor(newParticipante).subscribe( res =>
       console.log('Competidor actualizado correctamente') // ----------------------------------------------
     );
     this.datosCompetitor.identificacion = '';
     this.datosCompetitor.nombreParticipante = '';
+    this.datosCompetitor.puntosAnotados = '';
+    this.datosCompetitor.penalizaciones = '';
   }
 
 }
