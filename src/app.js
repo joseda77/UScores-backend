@@ -2,7 +2,6 @@ const cors = require('cors');
 const express =  require('express');
 const PATH = require('path');
 const port = process.env.port || '3200';
-const ejs = require('ejs'); // Para ejecutar y renderizar vistas html
 
 //Variables de llamados a modulos
 const usuarioRoutes = require('./routes/usuarios.server.routes');
@@ -11,14 +10,12 @@ const participaRoutes = require('./routes/participantes.server.routes');
 const equipoRoutes = require('./routes/equipos.server.routes');
 const encuentrosRoutes = require('./routes/encuentros.server.routes');
 const connectBD = require("./server/connection.server");
+
 //Instancia del framework Express
 const app = express();
 const server = require('http').Server(app); //Para comunicar http con el servidor
 
 //Configuracion
-app.set('views', PATH.join(__dirname,'views'));
-app.set('port',port); // Esta linea se puede obviar
-app.engine('html',ejs.renderFile);
 connectBD.functionConnect();// conecta al servidor de base de datos
 
 //Middleware

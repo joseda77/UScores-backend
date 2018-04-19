@@ -17,6 +17,7 @@ import { TorneosService } from './services/torneos/torneos.service';
 import { ParticipantesService } from './services/participantes/participantes.service';
 import { MatchComponent } from './component/match/match.component';
 import { TeamComponent } from './component/team/team.component';
+import { AuthComponent } from './conponent/auth/auth.component';
 
 
 const appRoutes: Routes = [
@@ -34,7 +35,8 @@ const appRoutes: Routes = [
     TournamentComponent,
     CompetitorComponent,
     MatchComponent,
-    TeamComponent
+    TeamComponent,
+    AuthComponent
   ],
   imports: [
     MaterializeModule,

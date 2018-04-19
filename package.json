@@ -18,9 +18,12 @@
   },
   "homepage": "https://github.com/joseda77/UScores#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.4",
     "ejs": "^2.5.7",
     "express": "*",
+    "jwt-simple": "^0.5.1",
+    "moment": "^2.22.1",
     "mongoose": "*",
     "npm": "^5.8.0"
   },
