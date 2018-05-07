@@ -29,6 +29,10 @@ var encuentroSchema = new Schema({
     'puntajeEquipo2':{
         type: puntajeEquipo2,
         required: true
+    },
+    'estado': {
+        type: Number,
+        default: 0
     }
   },
   {

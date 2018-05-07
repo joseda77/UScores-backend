@@ -7,7 +7,6 @@ var isAuth = function (req, res, next) {
             message: 'Usted no se ha autenticado'
         });
     }
-
     const token = req.headers.authorization.split(" ")[1];
     tokenFunction.decodeToken(token)
     .then(response =>{

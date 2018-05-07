@@ -19,8 +19,8 @@ function render(data) {
 
 function addMessage(e) {
   var payload = {
-    author: document.getElementById("username").value,
-    text: document.getElementById("texto").value
+    author: document.getElementById("author").value,
+    text: document.getElementById("text").value
   };
   socket.emit("new-message", payload);
   return false;

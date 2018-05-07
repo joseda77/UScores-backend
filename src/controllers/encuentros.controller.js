@@ -1,5 +1,8 @@
 const encuentrosModel = require("../models/encuentrosModels");
+const torneoController = require('./torneos.controller');
+const websocketService = require('../service/websocket.service');
 let idEncuentro = null;
+
 
 var getListEncuentros = function(req, res) {
   encuentrosModel.find(function(err, encuentrosMod) {
@@ -23,6 +26,7 @@ var getEncuentro = function(req, res) {
 };
 
 var createEncuentro = function(req, res) {
+  console.log("Entra en encuentro: ", req.body);
   var encuentrosMod = new encuentrosModel({
     consecutivo: req.body.consecutivo,
     fase: req.body.fase,
@@ -42,7 +46,6 @@ var createEncuentro = function(req, res) {
 };
 
 var updateEncuentro = function(req, res) {
-  console.log("Fuera del modelo ", req.params.id); //////////////////////////////////////////////////////
   idEncuentro = req.params.id;
   encuentrosModel.findById(idEncuentro, function(err, encuentrosMod) {
     if (encuentrosMod != null) {
@@ -52,13 +55,12 @@ var updateEncuentro = function(req, res) {
       encuentrosMod.equipo2 = req.body.equipo2;
       encuentrosMod.puntajeEquipo1 = req.body.puntajeEquipo1;
       encuentrosMod.puntajeEquipo2 = req.body.puntajeEquipo2;
+      encuentrosMod.estado = req.body.estado;
       encuentrosMod.save(function(err) {
         if (err) {
-          console.log("EL ERROR DE ACTUALIZAR ENCUENTROS ", err); //--------------------------------------
           return res.status(500).json({ errmsg: err });
         } else {
           return res.status(200).json(encuentrosMod);
-          console.log("Datos del encuentro actualizados satisfactoriamente"); //-------------------------
         }
       });
     } else {

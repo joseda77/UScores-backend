@@ -22,7 +22,8 @@ var usuarioSchema = new Schema(
     },
     password: {
       type: String,
-      select: false
+      required: true,
+      select: true
     },
     fechaRegistro: { // Esto podria salir en caso de que no se necesite.
       type: Date,
@@ -38,16 +39,16 @@ var usuarioSchema = new Schema(
 );
 
 usuarioSchema.pre('save', function(next){  
-  let usuario = this;
+  let usuario = this;  
   if(!usuario.isModified('password')) return next();
   bcrypt.genSalt(10, function(err, salt){
     if(err){
-      return next();
+      return next(err);
     }else{
-      bcrypt.hash(usuario.password, salt, null, function(err,hash){
+      bcrypt.hash(usuario.password, salt, function(err,hash){
         if(err){
-          return next();
-        }else{
+          return next(err);
+        }else{          
           usuario.password = hash;
           next();
         }
@@ -56,4 +57,13 @@ usuarioSchema.pre('save', function(next){
   });
 });
 
-  module.exports = mongoose.model('usuarios',usuarioSchema);
+usuarioSchema.methods.comparePassword = function(password, cb) {  
+  bcrypt.compare(password, this.password, function(err, isMatch) {       
+    if (err){       
+      return cb(err);
+    }
+    cb(null, isMatch);
+  });
+};
+
+module.exports = mongoose.model('usuarios',usuarioSchema);
