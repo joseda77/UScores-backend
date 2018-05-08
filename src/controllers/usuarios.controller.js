@@ -23,12 +23,10 @@ var getListUsuarios = function(req, res, next) {
 /* Obtiene un usuario en especifico por su nombre de usuario */
 var getUsuario = function(req, res) {
   nombreUser = req.params.nombreUsuario;
-  getUsuario(nombreUser);
   if (nombreUser == "") {
     return res.status(500).json({ errMsg: "No se ha ingresado el usuario" });
   }
-  usuariosModel.findOne({ nombreUsuario: nombreUser }, function(err,usuariosMod) {    
-    console.log(usuariosMod);
+  usuariosModel.findOne({ nombreUsuario: nombreUser }, function(err,usuariosMod) {   
     if (err) {
       return res.status(404).json({ errmsg: err });
     } else {
@@ -66,12 +64,11 @@ var createUsuarios = function(req, res) {
 };
 
 /* Actualiza los datos del usuario*/
-var updateUsuario = function(req, res) {  
-  nombreUser = req.body.nombreUsuario;
+var updateUsuario = function(req, res) { 
+  nombreUser = req.params.nombreUsuario;
   contra = req.body.password;
   correo = req.body.email;
   userSession = req.user;
-
   if(nombreUser == "") {
     return res.status(500).json({ errMsg: "No se puede actualizar porque no se ha ingresado un usuario" });
   }else{
@@ -84,6 +81,7 @@ var updateUsuario = function(req, res) {
     if (usuariosMod != null) {
       usuariosMod.email = req.body.email;
       usuariosMod.password = req.body.password;
+      usuariosMod.torneosCreados =req.body.torneosCreados;
       usuariosMod.save(function(err, next) {
         if (err) {
           return res.status(500).json({ errMsg: err });
@@ -146,9 +144,7 @@ var login = function(req, res) {
           return res.status(500).json({ errMsg: "Contraseña incorrecta" });
         }else{
           var token = tokenFunctions.createToken(usuariosMod);
-          
           userToken =token;
-          console.log(userToken);
           return res.status(200).json({
             message: 'Sesión iniciada correctamente.',
             token: token
@@ -158,14 +154,19 @@ var login = function(req, res) {
     }
   });
 };
-
-async function getJson(nombreUser){
+ var perteneceTorneo =async function (nombreUser, codTorneo){
   if (nombreUser == "") {
     return res.status(500).json({ errMsg: "No se ha ingresado el usuario" });
   }
-  var json = usuariosModel.findOne({ nombreUsuario: nombreUser });
-  console.log("El json del metodo es ",json);
-  return json;
+  var json = await usuariosModel.findOne({ nombreUsuario: nombreUser });
+  torneosCreados = json.torneosCreados;
+  for (let i = 0; i < torneosCreados.length; i++) {
+    var torneo = torneosCreados[i];
+    if(torneo == codTorneo){
+      return true;
+    }  
+  }
+  return false;
 
 }
 
@@ -175,5 +176,6 @@ module.exports = {
   getUsuario,
   updateUsuario,
   deleteUsuario,
-  login
+  login,
+  perteneceTorneo
 };

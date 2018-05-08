@@ -1,4 +1,5 @@
 const torneosModel = require("../models/torneoModels");
+const usuariosController = require("./usuarios.controller");
 
 let idTorneo = null;
 
@@ -6,7 +7,7 @@ let idTorneo = null;
 var getListTorneos = function(req, res, next) {
   torneosModel.find(function(err, torneosMod) {
     if (err) {
-      return res.status(500).json({ errmsg: err });
+      return res.status(500).json({ errMsg: err });
     } else {
       return res.status(200).json(torneosMod);
     }
@@ -18,7 +19,7 @@ var getTorneo = function(req, res, next) {
   idTorneo = req.params.codigoTorneo;
   torneosModel.findOne({ codigoTorneo: idTorneo }, function(err, torneosMod) {
     if (err) {
-      return res.status(500).json({ errmsg: err });
+      return res.status(500).json({ errMsg: err });
     } else {
       return res.status(200).json(torneosMod);
     }
@@ -38,35 +39,39 @@ var createTorneo = function(req, res, next) {
 
   torneosMod.save(function(err) {
     if (err) {
-      return res.status(500).json({ errmsg: err });
+      return res.status(500).json({ errMsg: err });
     } else {
       return res.status(201).json(torneosMod);
-      console.log("Torneo guardado satisfactoriamente"); //-------------------------
     }
   });
 };
 
 /* Actualiza los datos de un torneo */
-var updateTorneo = function(req, res, next) {
+var updateTorneo = async function(req, res, next) {
   idTorneo = req.body.codigoTorneo;
-  torneosModel.findOne({ codigoTorneo: idTorneo }, function(err, torneosMod) {
-    if (torneosMod != null) {
-      torneosMod.nombreTorneo = req.body.nombreTorneo;
-      torneosMod.deporte = req.body.deporte;
-      torneosMod.tipoTorneo = req.body.tipoTorneo;
-      torneosMod.listaEquipos = req.body.listaEquipos; //Cambiar esto por null en caso de que no funcione
-      torneosMod.listaPartidos = req.body.listaPartidos; //Cambiar esto por null en caso de que no funcione
-      torneosMod.save(function(err) {
-        if (err) {
-          return res.status(500).json({ errmsg: err });
-        } else {
-          return res.status(200).json(torneosMod);
-        }
-      });
-    } else {
-      return res.status(500).json({ errMsg: err });
-    }
-  });
+  var torneoPerteneceUsuario = await usuariosController.perteneceTorneo(req.user, idTorneo);
+  if(torneoPerteneceUsuario === false){
+    return res.status(400).json({ errMsg: "Usuario no autorizado para modificar este torneo" });
+  }else{
+    torneosModel.findOne({ codigoTorneo: idTorneo }, function(err, torneosMod) {
+      if (torneosMod != null) {
+        torneosMod.nombreTorneo = req.body.nombreTorneo;
+        torneosMod.deporte = req.body.deporte;
+        torneosMod.tipoTorneo = req.body.tipoTorneo;
+        torneosMod.listaEquipos = req.body.listaEquipos; //Cambiar esto por null en caso de que no funcione
+        torneosMod.listaPartidos = req.body.listaPartidos; //Cambiar esto por null en caso de que no funcione
+        torneosMod.save(function(err) {
+          if (err) {
+            return res.status(500).json({ errMsg: err });
+          } else {
+            return res.status(200).json(torneosMod);
+          }
+        });
+      } else {
+        return res.status(500).json({ errMsg: err });
+      }
+    });
+  }
 };
 
 /* Borra un torneo de la BD*/
@@ -75,7 +80,7 @@ var deleteTorneo = function(req, res, next) {
   torneosModel.findOne({ codigoTorneo: idTorneo }, function(err, torneosMod) {
     torneosMod.remove(function(err) {
       if (err) {
-        return res.status(500).json({ errmsg: err });
+        return res.status(500).json({ errMsg: err });
       } else {
         return res.status(200).json(torneosMod);
       }
