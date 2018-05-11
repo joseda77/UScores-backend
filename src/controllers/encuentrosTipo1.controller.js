@@ -1,4 +1,4 @@
-const encuentrosModel = require("../models/encuentrosModels");
+const encuentrosModel = require("../models/encuentrosTipo1Models");
 const torneoController = require('./torneos.controller');
 const websocketService = require('../service/websocket.service');
 let idEncuentro = null;
@@ -26,7 +26,6 @@ var getEncuentro = function(req, res) {
 };
 
 var createEncuentro = function(req, res) {
-  console.log("Entra en encuentro: ", req.body);
   var encuentrosMod = new encuentrosModel({
     consecutivo: req.body.consecutivo,
     fase: req.body.fase,

@@ -5,6 +5,9 @@ const Schema = mongoose.Schema;
 var puntajeEquipo1 = [];
 var puntajeEquipo2 = [];
 
+
+/** Este modelo maneja el tipo de encuentros que es con tiempos 
+ * y en el que solo participan dos equipos */
 var encuentroSchema = new Schema({
     'consecutivo':{
         type: String,
@@ -23,12 +26,10 @@ var encuentroSchema = new Schema({
         required: true
     },
     'puntajeEquipo1':{
-        type: puntajeEquipo1,
-        required: true
+        type: puntajeEquipo1
     },
     'puntajeEquipo2':{
-        type: puntajeEquipo2,
-        required: true
+        type: puntajeEquipo2
     },
     'estado': {
         type: Number,
@@ -40,4 +41,4 @@ var encuentroSchema = new Schema({
   }
 );
 
-module.exports = mongoose.model('encuentros',encuentroSchema);
+module.exports = mongoose.model('encuentrosTipo1',encuentroSchema);

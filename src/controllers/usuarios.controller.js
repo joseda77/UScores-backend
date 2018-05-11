@@ -41,7 +41,7 @@ var createUsuarios = function(req, res) {
   contra = req.body.password;
   correo = req.body.email;
   if(user == "" || contra == "" || correo == "") {
-    return res.status(500).json({ errMsg: "No se puede crear un usuario con campos vacios" });
+    return res.status(404).json({ errMsg: "No se puede crear un usuario con campos vacios" });
   }
   var usuariosMod = new usuariosModel({
     nombreUsuario: req.body.nombreUsuario,
