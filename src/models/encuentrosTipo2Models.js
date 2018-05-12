@@ -25,6 +25,9 @@ var encuentroSchema = new Schema({
         type: Number,
         default: 0
     }
+    },
+    {
+        versionKey: false
 });
 
 module.exports = mongoose.model('encuentrosTipo2',encuentroSchema);

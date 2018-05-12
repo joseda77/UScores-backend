@@ -22,8 +22,8 @@ var usuarioSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
-      select: true
+      select: false,
+      required: true     
     },
     fechaRegistro: { // Esto podria salir en caso de que no se necesite.
       type: Date,
@@ -47,8 +47,7 @@ usuarioSchema.pre('save', function(next){
     }else{
       bcrypt.hash(usuario.password, salt, function(err,hash){
         if(err){
-          return next(err);
-        }else{          
+          return next(err);  
           usuario.password = hash;
           next();
         }

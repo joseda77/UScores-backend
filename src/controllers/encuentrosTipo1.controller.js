@@ -48,7 +48,7 @@ var updateEncuentro = function(req, res) {
   idEncuentro = req.params.id;
   encuentrosModel.findById(idEncuentro, function(err, encuentrosMod) {
     if (encuentrosMod != null) {
-      encuentrosMod.consecutivo = req.body.consecutivo;
+      encuentrosMod.consecutivo = req.body.consecutivo; ///-------------------------------- mirar bien si quitarlo o no, no le veo el uso
       encuentrosMod.fase = req.body.fase;
       encuentrosMod.equipo1 = req.body.equipo1;
       encuentrosMod.equipo2 = req.body.equipo2;
@@ -71,14 +71,17 @@ var updateEncuentro = function(req, res) {
 var deleteEncuentro = function(req, res) {
   idEncuentro = req.params.id;
   encuentrosModel.findById(idEncuentro, function(err, encuentrosMod) {
-    encuentrosMod.remove(function(err) {
-      if (err) {
-        return res.status(500).json({ errmsg: err });
-      } else {
-        return res.status(200).json(encuentrosMod);
-        console.log("Encuentro borrado correctamente");/////////---------------------------------------
-      }
-    });
+    if (encuentrosMod != null) {
+      encuentrosMod.remove(function(err) {
+        if (err) {
+          return res.status(500).json({ errmsg: err });
+        } else {
+          return res.status(201).json({ InfoMsg: "¡Encuentro borrado correctamente!" });
+        }
+      });
+    }else{
+      return res.status(500).json({ errmsg: err });
+    }
   });
 };
 
