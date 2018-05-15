@@ -1,5 +1,7 @@
 const participantesModel = require("../models/participanteModels.js");
+const usuarioController = require("./usuarios.controller");
 let idParticipante = null;
+let bandera = null;
 
 // Recupera todos los documentos en la BD
 var getListParticipantes = function(req, res, next) {
@@ -79,6 +81,11 @@ var deleteParticipante = function(req, res, next) {
     });
   });
 };
+
+
+/*var setBandera = async function(){
+  bandera = usuarioController.perteneceTorneo();
+}*/
 
 module.exports = {
   createParticipantes,

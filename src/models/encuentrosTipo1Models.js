@@ -17,6 +17,10 @@ var encuentroSchema = new Schema({
         type: Number,
         required: true
     },
+    'fechaDeJuego':{
+        type: Date,
+        required: true
+    },
     'equipo1': {
         type: String,
         required: true

@@ -19,16 +19,27 @@ var torneoSchema = new Schema({
       type: String,
       required: true
     },
+    'adminTorneo':{//---------------------- Se le agrega para conocer su creador ---------------
+      type: String,
+      required: true
+    },
+    'numeroFases':{ //---------------------- Tambien se agrega para realizar validaciones ---------------
+      type: Number,
+      required: true
+    },
     'tipoTorneo': {
       type: Number,
       required: true
     },
     'listaEquipos': {
-      type: arrEquipos,
-      required: true
+      type: arrEquipos
     },
     'listaPartidos':{
       type: arrPartidos
+    },
+    'estado':{
+      type: Number,
+      default: 0
     }
   }
   ,

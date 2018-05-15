@@ -7,9 +7,9 @@ const app = express.Router();
 
 app.get('/torneos',torneosController.getListTorneos);
 app.get('/torneos/:codigoTorneo',torneosController.getTorneo);
-app.post('/torneos',torneosController.createTorneo);
+app.post('/torneos',auth,torneosController.createTorneo);
 app.put('/torneos/:codigoTorneo',auth,torneosController.updateTorneo);
-app.delete('/torneos/:codigoTorneo',torneosController.deleteTorneo);
+app.delete('/torneos/:codigoTorneo',auth,torneosController.deleteTorneo);
 
 
 module.exports = app;

@@ -1,6 +1,5 @@
 const usuariosModel = require("../models/usuarioModels");
 const tokenFunctions = require("../service/token.service");
-const bcrypt = require("bcryptjs");
 
 let nombreUser = null;
 var user = null;
@@ -50,15 +49,12 @@ var createUsuarios = function(req, res) {
     torneosCreados: [], //Cambiar esto por null en caso de que no funcione
     torneosFavoritos: [] //Cambiar esto por null en caso de que no funcione
   });
-
   usuariosMod.save(function(err, next) {
     if (err) {      
       return res.status(500).json({ errMsg: err });
-    } else {
+    } else {      
       //res.status(201).json(usuariosMod);/// Revisar para poder enviarle los datos a Angular y que muestre
-      return res.status(201).json({
-        token: tokenFunctions.createToken(usuariosMod)
-      });
+      return res.status(201).json(usuariosMod);
     }
   });
 };
@@ -130,13 +126,13 @@ var deleteUsuario = function(req, res, next) {
 var login = function(req, res) {
   nombreUser = req.body.nombreUsuario;
   password = req.body.password;
-  usuariosModel.findOne({ nombreUsuario: nombreUser }, function(err, usuariosMod) {    
+  usuariosModel.findOne({ nombreUsuario: nombreUser }).select('+password').exec(function(err, usuariosMod) {
     if (err) {
       return res.status(500).json({ errMsg: err});
     }
-    if (!usuariosMod) {
+    if (!usuariosMod) {      
       return res.status(404).json({ message: "No existe el usuario" });
-    } else {
+    } else {      
       usuariosMod.comparePassword(password,function(err,isMatch){
         if(err){
           return res.status(500).json({ errMsg: "Ha ocurrido un error inesperado, por favor intente nuevamente"+err });
@@ -144,7 +140,6 @@ var login = function(req, res) {
           return res.status(500).json({ errMsg: "Contraseña incorrecta" });
         }else{
           var token = tokenFunctions.createToken(usuariosMod);
-          userToken =token;
           return res.status(200).json({
             message: 'Sesión iniciada correctamente.',
             token: token
@@ -154,12 +149,13 @@ var login = function(req, res) {
     }
   });
 };
+/*
  var perteneceTorneo =async function (nombreUser, codTorneo){
   if (nombreUser == "") {
     return res.status(500).json({ errMsg: "No se ha ingresado el usuario" });
   }
   var json = await usuariosModel.findOne({ nombreUsuario: nombreUser });
-  torneosCreados = json.torneosCreados;
+  var torneosCreados = json.torneosCreados;//--------------------------------- aqui agregue el var ----------
   for (let i = 0; i < torneosCreados.length; i++) {
     var torneo = torneosCreados[i];
     if(torneo == codTorneo){
@@ -167,7 +163,15 @@ var login = function(req, res) {
     }  
   }
   return false;
+}*/
 
+var getModelUsuario = async function(nombreUser){
+  var userModelo = await usuariosModel.findOne({ nombreUsuario: nombreUser});
+  if(userModelo == null || userModelo === undefined){
+    return null;
+  }else{
+    return userModelo;
+  }
 }
 
 module.exports = {
@@ -177,5 +181,5 @@ module.exports = {
   updateUsuario,
   deleteUsuario,
   login,
-  perteneceTorneo
+  getModelUsuario
 };

@@ -9,6 +9,6 @@ app.get("/usuarios/:nombreUsuario", usuariosController.getUsuario);
 app.post("/login", usuariosController.login);
 app.post("/usuarios", usuariosController.createUsuarios);
 app.put("/usuarios/:nombreUsuario", auth, usuariosController.updateUsuario);
-app.delete("/usuarios/:nombreUsuario", auth, usuariosController.deleteUsuario);
+app.delete("/usuarios/:nombreUsuario",usuariosController.deleteUsuario);
 
 module.exports = app;

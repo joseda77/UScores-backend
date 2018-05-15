@@ -1,14 +1,13 @@
 const jwt = require("jwt-simple");
 const moment = require("moment");
 const secretToken = "67a9791a86ec446b582d39e079d14c08";
-const tokenInf = null;
 
 var createToken = function(user) { 
   const payload = {
     sub: user.nombreUsuario,
     creaToken: moment().unix(),
     expiratoken: moment()
-      .add(10, "days")
+      .add(1, "days")
       .unix()
   };
   return jwt.encode(payload, secretToken);

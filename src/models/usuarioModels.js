@@ -40,14 +40,15 @@ var usuarioSchema = new Schema(
 
 usuarioSchema.pre('save', function(next){  
   let usuario = this;  
-  if(!usuario.isModified('password')) return next();
+  if(!usuario.isModified('password')) return next();  
   bcrypt.genSalt(10, function(err, salt){
     if(err){
       return next(err);
-    }else{
+    }else{      
       bcrypt.hash(usuario.password, salt, function(err,hash){
         if(err){
-          return next(err);  
+          return next(err);
+        }else{  
           usuario.password = hash;
           next();
         }
@@ -56,7 +57,7 @@ usuarioSchema.pre('save', function(next){
   });
 });
 
-usuarioSchema.methods.comparePassword = function(password, cb) {  
+usuarioSchema.methods.comparePassword = function(password, cb) { 
   bcrypt.compare(password, this.password, function(err, isMatch) {       
     if (err){       
       return cb(err);

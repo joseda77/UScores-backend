@@ -13,7 +13,6 @@ var getListEncuentros = function(req, res) {
 
 var getEncuentro = function(req, res) {
   idEncuentro = req.params.id;
-
   encuentrosModel.findById(idEncuentro, function(err, encuentrosMod) {
     if (err) {
       return res.status(500).json({ errMsg: err });
@@ -49,7 +48,6 @@ var updateEncuentro = function(req, res) {
       encuentrosMod.equipos = req.body.equipos;
       encuentrosMod.puntaje = req.body.puntaje;
       encuentrosMod.estado = req.body.estado;
-
       encuentrosMod.save(function(err) {
         if (err) {
           return res.status(500).json({ errMsg: err });
