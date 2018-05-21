@@ -148,6 +148,20 @@ var getModelTorneo = async function(codTorneo){
   }
 }
 
+/**Metodo que retorna el numero de fases correspondientes a un torneo de acuerdo con el numero
+ *de equipos ingresado 
+ */
+var defineNumeroFases = function(numeroEquipos, tipoTorneo){
+  if(tipoTorneo == 1){  //si es uno entonces es una liga
+    return 1;
+  }else if(tipoTorneo == 2) { //si es dos entonces es un feaxture o llaves o cruces directos
+    if(numeroEquipos >= 2){ // Entra si hay dos o mas equipos
+      return Math.ceil(Math.log2(numeroEquipos));
+    }else{  // Si numero de equipos es 0 o 1 retorne un negativo que sirve para la comparacion
+      return -999;
+    }
+  }
+}
 module.exports = {
   getListTorneos,
   getTorneo,
