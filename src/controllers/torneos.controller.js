@@ -1,5 +1,6 @@
 const torneosModel = require("../models/torneoModels");
 const usuariosController = require("./usuarios.controller");
+const fasesController = require('./fases.controller');
 
 let idTorneo = null;
 let deporteTorneo = null;
@@ -162,11 +163,28 @@ var defineNumeroFases = function(numeroEquipos, tipoTorneo){
     }
   }
 }
+
+/**Metodo que se invoca desde el torneo y llama a crear fases en el controlador */
+var createFases = async function (req,res) {
+  let numeroFases =req.body.numeroFases;
+  let equipos = req.body.equipo;
+  let numeroEquipos = equipos.length;
+  let arregloDeFases = [];
+  let consecutivoFase = 0;
+  for (let i = 0; i < numeroFases; i++) {
+    var fase = await fasesController.createFase(i*2,numeroEquipos,i/2,i);
+    console.log(fase);
+  }
+  return res.status(200).json({MSG: "ok"});
+}
+
+
 module.exports = {
   getListTorneos,
   getTorneo,
   createTorneo,
   updateTorneo,
   deleteTorneo,
-  getModelTorneo
+  getModelTorneo,
+  createFases
 };

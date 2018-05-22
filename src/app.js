@@ -12,6 +12,7 @@ const encuentrosTipo2Routes = require('./routes/encuentrosTipo2.server.routes');
 const connectBD = require("./server/connectionDB.server");
 const connectApp = require("./server/connectionApp.server");
 const webSocket = require("./service/websocket.service");
+const faseRoutes = require('./routes/fases.server.routes');
 
 //Instancia del framework Express
 const app = connectApp.app;
@@ -38,3 +39,4 @@ app.use(equipoRoutes);
 app.use(encuentrosTipo1Routes);
 app.use(encuentrosTipo2Routes);
 app.use(webSocket);
+app.use(faseRoutes);

@@ -1,6 +1,16 @@
 const faseModel = require('../models/fasesModels');
 
 
+var getFases = function (req, res) {
+    faseModel.find(function (err, faseMod) {
+        if (err) {
+            return res.status(500).json({ errMsg: err });
+        } else {
+            return res.status(201).json(faseMod);
+        }
+    });
+}
+
 var getFase = function (req, res) {
     faseModel.findById(req.params.id,function (err, faseMod) {
         if (error) {
@@ -11,22 +21,29 @@ var getFase = function (req, res) {
     });
 }
 
-var createFase = function (req, res) {
+
+/**va en crear fase, recordar colocar este metodo asincrono,ademas de arreglar el error del schema de fase*/
+var createFase = async function (encuentros, equipos, clasificados, fase) {
+    console.log(encuentros,equipos,clasificados,fase);
     faseMod = new faseModel({
-        numeroEncuentros: req.body.numeroEncuentros,
-        numeroEquipos: req.body.numeroEquipos,
-        numeroDeClasificados: req.body.numeroDeClasificados,
-        numeroFase: req.body.numeroFase
+        numeroEncuentros: encuentros,
+        numeroEquipos: equipos,
+        numeroDeClasificados: clasificados,
+        numeroFase: fase
     });
 
     faseMod.save(function (err) {
-        if(err){
-            return res.status(500).json({ errMsg: err })
-        }else{
-            return res.status(500).json(faseMod);
+        console.log("Entra al save"+err);
+        if (err) {
+            return err;
+        } else {
+            console.log("Entra al guardar");
+            return faseMod;
         }
     });
 }
+
+
 
 var updateFase = function (req, res) {
     faseModel.findById(req.params.id, function (err, faseMod) {
@@ -60,5 +77,6 @@ module.exports = {
     deleteFase,
     createFase,
     updateFase,
-    getFase
+    getFase,
+    getFases
 }
