@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+var listaPartido = [];
+
 var faseSchema = new Schema({
-   /* 'codigoFase':{
-        type: String,
-        require: true,
-        unique: true
-    },*/
     'numeroEncuentros':{
         type: Number,
         require: true
@@ -22,6 +19,9 @@ var faseSchema = new Schema({
     'numeroFase':{
         type: Number,
         require: true
+    },
+    'listaPartidos':{
+        type: listaPartido
     },
     'estado': {
         type: Number,

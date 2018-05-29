@@ -1,5 +1,5 @@
 const faseModel = require('../models/fasesModels');
-
+const encuentros1Controller = require('./encuentrosTipo1.controller');
 
 var getFases = function (req, res) {
     faseModel.find(function (err, faseMod) {
@@ -23,36 +23,37 @@ var getFase = function (req, res) {
 
 
 /**va en crear fase, recordar colocar este metodo asincrono,ademas de arreglar el error del schema de fase*/
-var createFase = async function (encuentros, equipos, clasificados, fase) {
-    console.log(encuentros,equipos,clasificados,fase);
+var createFase = async function (encuentros, numEquipos, clasificados, fase, listaParti) {
+    //console.log(encuentros,equipos,clasificados,fase);
     faseMod = new faseModel({
         numeroEncuentros: encuentros,
-        numeroEquipos: equipos,
-        numeroDeClasificados: clasificados,
-        numeroFase: fase
+        numeroEquipos: numEquipos,
+        numeroDeClasificados: clasificados, /**Numero de clasificados por fase */
+        numeroFase: fase,
+        listaPartidos: listaParti
     });
-
+    return faseMod;
     faseMod.save(function (err) {
         console.log("Entra al save"+err);
         if (err) {
             return err;
         } else {
             console.log("Entra al guardar");
-            return faseMod;
+            return faseMod._id;
         }
     });
 }
 
 
 
-var updateFase = function (req, res) {
+var updateFaseExtern = function (req, res) {
     faseModel.findById(req.params.id, function (err, faseMod) {
         faseMod.numeroEncuentros=  req.body.numeroDeEncuentros;
         faseMod.numeroEquipos = req.body.numeroEquipos;
         faseMod.numeroDeClasificados = req.body.numeroDeClasificados;
         faseMod.numeroFase = req.body.numeroFase;
         faseMod.estado = req.body.estado;
-
+        faseMod.listaPartidos = req.body.listaPartidos;
         faseMod.save(function (err){
             if(err){
                 return res.status(500).json({ errMsg: err});
@@ -73,10 +74,50 @@ var deleteFase = function (req, res) {
     });
 }
 
+var updateEquiposFase = function(fase,listaEquipos){
+    let tamaño =(listaEquipos.length)/2;
+    faseModel.findById(fase, function (err, faseMod) {
+        let lista = [];
+        for (let i = 0; i < tamaño; i++) {
+            let random = Math.floor(Math.random() * (listaEquipos.length-2));
+            let random2 = Math.floor(Math.random() * (listaEquipos.length-2));
+            let equipo1 = listaEquipos[random];
+            let equipo2 = listaEquipos[random2];
+            if (random!= random2) {
+                
+                let partido = encuentros1Controller.createEncuentro(equipo1, equipo2, fase, 1);
+                listaEquipos.splice(random, 1);
+                listaEquipos.splice(random2, 1);
+                //console.log("entre las veces", listaEquipos[1],listaEquipos[0], equipo1, equipo2, random2);
+                lista.push(partido);
+                //console.log(lista[2]);
+            } else if (listaEquipos.length == 2) {
+                let partido = encuentros1Controller.createEncuentro(listaEquipos[0], listaEquipos[1], fase, 1);
+                lista.push(partido);
+                break;
+            }
+            else {
+                i--;
+            }
+        }
+        /**El error esta aqui */
+        console.log("Entra en fase ome: ",lista);
+        faseMod.listaPartidos = lista;
+        faseMod.save(function (err) {
+            if (err) {
+                return res.status(500).json({ errMsg: err });
+            } else {
+                return res.status(201).json(faseMod);
+            }
+        });
+    });
+}
+
 module.exports = {
     deleteFase,
     createFase,
-    updateFase,
+    updateFaseExtern,
     getFase,
-    getFases
+    getFases,
+    updateEquiposFase
 }

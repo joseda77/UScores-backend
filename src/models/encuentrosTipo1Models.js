@@ -18,16 +18,13 @@ var encuentroSchema = new Schema({
         required: true
     },
     'fechaDeJuego':{
-        type: Date,
-        required: true
+        type: Date
     },
     'equipo1': {
-        type: String,
-        required: true
+        type: String
     },
     'equipo2':{
-        type: String,
-        required: true
+        type: String
     },
     'puntajeEquipo1':{
         type: puntajeEquipo1

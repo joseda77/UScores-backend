@@ -5,7 +5,7 @@ const app = express.Router();
 
 app.get('/fase', faseController.getFases);
 app.post('/fase', faseController.createFase);
-app.put('/fase/:id', faseController.updateFase);
+app.put('/fase/:id', faseController.updateFaseExtern);
 app.delete('/fase/:id', faseController.deleteFase);
 
 

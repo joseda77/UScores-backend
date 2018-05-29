@@ -34,7 +34,7 @@ var torneoSchema = new Schema({
     'listaEquipos': {
       type: arrEquipos
     },
-    'listaPartidos':{
+    'listaFases':{ /**Cmabie lista partido por lista fase */
       type: arrPartidos
     },
     'estado':{

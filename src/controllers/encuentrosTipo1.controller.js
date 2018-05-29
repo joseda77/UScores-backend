@@ -37,6 +37,25 @@ var getEncuentro = function(req, res) {
   });
 };
 
+
+var createEncuentro = function(equipo1Encuentro,equipo2Encuentro,faseEncuentro,consecEncuentro){
+  var encuentrosMod = new encuentrosModel({
+    consecutivo: consecEncuentro,
+    fase: faseEncuentro,
+    equipo1: equipo1Encuentro,
+    equipo2: equipo2Encuentro
+  });
+
+  return "hello";
+  encuentrosMod.save(function (err) {
+    if (err) {
+      return res.status(500).json({ errmsg: err });
+    } else {
+      return encuentrosMod._id;
+    }
+  });
+}
+/*
 var createEncuentro = function(req, res) {
   consecEncuentro = req.body.consecutivo;
   faseEncuentro = req.body.fase;
@@ -45,7 +64,7 @@ var createEncuentro = function(req, res) {
   fecha = new Date (req.body.fechaDeJuego);
   if(consecEncuentro == undefined || faseEncuentro === undefined ||  equipo1Encuentro == undefined ||
     equipo2Encuentro == undefined || req.body.fechaDeJuego  == undefined) {
-    return res.status(404).json({ errMsg: "Error al crear el encuentro, algunos campos estan imcompletos"});
+    return res.status(404).json({ errMsg: "Error al crear el encuentro, algunos campos estan incompletos"});
   }
   if (fecha <= Date.now()) {
       return res.status(404).json({ errMsg: "Error al crear el encuentro, la fecha no puede ser igual o menor a la fecha actual" });
@@ -65,7 +84,7 @@ var createEncuentro = function(req, res) {
       return res.status(201).json(encuentrosMod);
     }
   });
-};
+};*/
 
 var updateEncuentro = function(req, res) {
   usuario = req.user;
@@ -191,10 +210,25 @@ var getModeloEquipo = async function (codEquipo) {
   let equipo = await equi
 }
 
+var completaEncuetros = function(numeroPartidos,partido,fase){
+  var tamaño = partido.length;
+  if (numeroPartidos == tamaño) {
+    console.log("no hay necesidad de crear esa monda!");
+  } else if (tamaño < numeroPartidos) {
+    for (let i = tamaño + 1; i <= numeroPartidos; i++) {
+      let encuentro = this.createEncuentro(null, null, fase,1);
+      console.log("En encuentreos el partido es", encuentro);
+      partido.push(encuentro);
+    }
+    return partido;
+  }
+};
+
 module.exports = {
   getEncuentro,
   getListEncuentros,
   createEncuentro,
   updateEncuentro,
-  deleteEncuentro
+  deleteEncuentro,
+  completaEncuetros
 };
