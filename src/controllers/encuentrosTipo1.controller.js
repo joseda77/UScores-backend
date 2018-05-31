@@ -210,19 +210,40 @@ var getModeloEquipo = async function (codEquipo) {
   let equipo = await equi
 }
 
-var completaEncuetros = function(numeroPartidos,partido,fase){
+var completaEncuetros =  function(numeroPartidos,partido,fase){
   var tamaño = partido.length;
-  if (numeroPartidos == tamaño) {
-    console.log("no hay necesidad de crear esa monda!");
+  if (numeroPartidos == tamaño) { 
+    console.log("retorna por aca");   
+    return partido;
   } else if (tamaño < numeroPartidos) {
     for (let i = tamaño + 1; i <= numeroPartidos; i++) {
-      let encuentro = this.createEncuentro(null, null, fase,1);
-      console.log("En encuentreos el partido es", encuentro);
+      let encuentro =  createEncuentro(null, null, fase,1);
       partido.push(encuentro);
     }
     return partido;
   }
 };
+
+var selecEncuentros = function(arregloEquipos, numeroLlaves, fase){
+  let equipos = arregloEquipos;
+  let iteration = numeroLlaves;
+  let respuesta = [];
+  let partidos = [];
+  let partido = null;
+  let i=1;
+  while (equipos.length > 0 && i <=iteration ){
+    let random = Math.floor(Math.random() * equipos.length);
+    let equipo1 = equipos.splice(random,1);
+    let random2 = Math.floor(Math.random() * equipos.length);
+    let equipo2 = equipos.splice(random2, 1);
+    partido = createEncuentro(equipo1[0], equipo2[0], fase, i + 1);
+    partidos.push(partido);
+    i++;
+  }
+  respuesta[0]= partidos;
+  respuesta[1] = equipos;
+  return respuesta;
+}
 
 module.exports = {
   getEncuentro,
@@ -230,5 +251,6 @@ module.exports = {
   createEncuentro,
   updateEncuentro,
   deleteEncuentro,
-  completaEncuetros
+  completaEncuetros,
+  selecEncuentros
 };
