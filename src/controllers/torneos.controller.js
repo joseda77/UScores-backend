@@ -36,17 +36,20 @@ var getTorneo = function(req, res, next) {
 };
 
 /* Crea todos los torneos  */
-var createTorneo = function(req, res) {
-  console.log(req.user)
+var createTorneo = async function(req, res) {
+  listaEquipos = req.body.listaEquipos;
+  torneoType = req.body.tipoTorneo;
+  listaFases = await createFases(torneoType, listaEquipos);
+  numFases = listaFases.length;
   var torneosMod = new torneosModel({
     codigoTorneo: req.body.codigoTorneo,
     nombreTorneo: req.body.nombreTorneo,
     deporte: req.body.deporte,
     tipoTorneo: req.body.tipoTorneo,
-    numeroFases: req.body.numeroFases,
+    numeroFases: numFases,
     adminTorneo: req.user,
     listaEquipos: req.body.listaEquipos, //Cambiar esto por null en caso de que no funcione
-    listaFases: req.body.listaFases //Cambiar esto por null en caso de que no funcione
+    listaFases: listaFases //Cambiar esto por null en caso de que no funcione
   });
 
   torneosMod.save(function(err) {
@@ -153,7 +156,7 @@ var getModelTorneo = async function(codTorneo){
 /**Metodo que retorna el numero de fases correspondientes a un torneo de acuerdo con el numero
  *de equipos ingresado 
  */
-var defineNumeroFases = function(numeroEquipos, tipoTorneo){
+var defineNumeroFases = async function(numeroEquipos, tipoTorneo){
   if(tipoTorneo == 1){  //si es uno entonces es una liga
     return 1;
   }else if(tipoTorneo == 2) { //si es dos entonces es un feaxture o llaves o cruces directos
@@ -165,60 +168,73 @@ var defineNumeroFases = function(numeroEquipos, tipoTorneo){
   }
 }
 
-/**Metodo que se invoca desde el torneo y llama a crear fases en el controlador */
-var createFases = async function (req,res) {  
-  let tipoTorneo =req.body.tipoTorneo;
-  let equipos = req.body.equipos;
+/**Metodo que se invoca desde el torneo y crea las fases de acuerdo a una lista de torneos 
+ * y un tipo de torneo, utiliza metodos del controlador de fases y el controlador de encuentros1
+*/
+var createFases = async function (torneoType, equiposList) {  
+  //let tipoTorneo =req.body.tipoTorneo;
+  //let equipos = req.body.equipos;
+  let tipoTorneo = torneoType;
+  let equipos = equiposList;
   let numeroEquipos = equipos.length;
-  let numeroFases = defineNumeroFases(numeroEquipos,tipoTorneo);
-  //console.log("el numero de fases es: "+numeroFases);
+  let numeroFases = await defineNumeroFases(numeroEquipos,tipoTorneo);
   let arregloDeFases = [];  
   let partido = null;
-  if(numeroFases==1){
-    return res.status(200).json({ MSG: "EL torneo es una liga o esta compuesto por 2 equipos" }); 
-  }
-    /** Aqui creamos las fases */
-    if(numeroEquipos==2){
-      console.log("Se le pide a la fase que se genere con 1 llave y 2 equipos")
-    }else{
+  let partidoArray = [];
+  let fase = null;
+  /**Este if es para cuando se crea una y solo una fase */
+  if(tipoTorneo==1 || numeroEquipos==2 || numeroFases==1){
+    let numeroEncuentros = (equipos.length) - 1;
+    partidoArray = await encuentro1Controller.createPartidosLiga(equipos);
+    fase = await fasesController.createFase(numeroEncuentros, numeroEquipos,0,1, partidoArray);
+    arregloDeFases.push(fase);
+    return arregloDeFases;
+  }else{/**Este if es para cuando se crea dos o mas*/
       let consecutivoFase = 0; /**Es la bandera que me indica cuantas fases se han creado */
       let infoFase1 = setPartidos(numeroEquipos, numeroFases);
       let numSalvados = infoFase1[0];
       let numeroEncuentros = infoFase1[1];
       let respuesta = null;
       let tamaño = 0;
+      fase = null;
+      partidoArray = [];
+      /** El numero de salvados es el numero de equipos que avanzan directo a la siguiente fase */
       if (numSalvados == 0){
-        respuesta = encuentro1Controller.selecEncuentros(equipos, numeroEquipos/2,1);
-      }else {//----------------------------------------------------------------------------
-        let partidoArray = [];
-        respuesta = encuentro1Controller.selecEncuentros(equipos,numeroEncuentros,1);
-        partidoArray=respuesta[0];            
-        let fase = await fasesController.createFase(numeroEncuentros, numeroEncuentros*2,numeroEncuentros,1, partidoArray);
+        respuesta = await encuentro1Controller.selecEncuentros(equipos, numeroEquipos/2,1);
+        partidoArray=respuesta[0];
+        fase = await fasesController.createFase(numeroEncuentros, numeroEncuentros*2,numeroEncuentros,1, partidoArray);
+        arregloDeFases.push(fase);
+        consecutivoFase = 1;  
+      }else {
+        partidoArray = [];
+        respuesta = await encuentro1Controller.selecEncuentros(equipos,numeroEncuentros,1);
+        partidoArray=respuesta[0];      
+        fase = await fasesController.createFase(numeroEncuentros, numeroEncuentros*2,numeroEncuentros,1, partidoArray);
         arregloDeFases.push(fase);
         consecutivoFase = 1;      
         numeroEquipos = 2 ** Math.floor(Math.log2(numeroEquipos));
         let numLlaves = numeroEquipos/2;
         tamaño = equipos.length;
-        let respuesta2 = encuentro1Controller.selecEncuentros(equipos, numLlaves,2);
+        let respuesta2 = await encuentro1Controller.selecEncuentros(equipos, numLlaves,2);
         partidoArray= respuesta2[0];
-        partidoArray = encuentro1Controller.completaEncuetros(numLlaves,partidoArray,2);
+        partidoArray = await encuentro1Controller.completaEncuetros(numLlaves,partidoArray,2);
         fase = await fasesController.createFase(numLlaves, numeroEquipos, numLlaves, 2,partidoArray);
         arregloDeFases.push(fase);
         consecutivoFase++;
         numeroEquipos= tamaño;
-      }//--------------------------------------------------------------------------------------------------
+      }
       numeroEquipos = 2 ** Math.floor(Math.log2(numeroEquipos));
       /**Agregar las fases que faltan 
         y colocarle una bandera a la creacion fase2 para saber cuantas fases mas se tiene que crear aqui */
       for (let i = consecutivoFase+1; i <= numeroFases; i++) {
         numeroEquipos = numeroEquipos / 2;
         let numEquiAvanzan = numeroEquipos;
-        let arregloParti = encuentro1Controller.completaEncuetros(numEquiAvanzan, [], i);
+        let arregloParti = await encuentro1Controller.completaEncuetros(numEquiAvanzan, [], i);
         fase = await fasesController.createFase(numEquiAvanzan, numeroEquipos,numEquiAvanzan, i,arregloParti);
         arregloDeFases.push(fase);
       }
     }
-  return res.status(200).json(arregloDeFases);
+  return arregloDeFases;
 }
 /** Metodo que asigna el numero de partidos que se jugaran en la primera fase,
  * este metodo ayuda a que se organice de forma correcta el numero de juegos y la asignacion

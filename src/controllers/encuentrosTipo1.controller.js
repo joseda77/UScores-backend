@@ -38,7 +38,7 @@ var getEncuentro = function(req, res) {
 };
 
 
-var createEncuentro = function(equipo1Encuentro,equipo2Encuentro,faseEncuentro,consecEncuentro){
+var createEncuentro = async function(equipo1Encuentro,equipo2Encuentro,faseEncuentro,consecEncuentro){
   var encuentrosMod = new encuentrosModel({
     consecutivo: consecEncuentro,
     fase: faseEncuentro,
@@ -46,14 +46,15 @@ var createEncuentro = function(equipo1Encuentro,equipo2Encuentro,faseEncuentro,c
     equipo2: equipo2Encuentro
   });
 
-  return "hello";
-  encuentrosMod.save(function (err) {
-    if (err) {
-      return res.status(500).json({ errmsg: err });
-    } else {
-      return encuentrosMod._id;
-    }
-  });
+  try {
+    let partido = await encuentrosMod.save();
+    return partido._id;
+  } catch (err) {
+    if (err.name === 'MongoError' && err.code === 11000) {
+      return err;
+  }
+  return err;
+  }
 }
 /*
 var createEncuentro = function(req, res) {
@@ -210,33 +211,34 @@ var getModeloEquipo = async function (codEquipo) {
   let equipo = await equi
 }
 
-var completaEncuetros =  function(numeroPartidos,partido,fase){
+var completaEncuetros = async function(numeroPartidos,partido,fase){
   var tamaño = partido.length;
   if (numeroPartidos == tamaño) { 
-    console.log("retorna por aca");   
     return partido;
   } else if (tamaño < numeroPartidos) {
     for (let i = tamaño + 1; i <= numeroPartidos; i++) {
-      let encuentro =  createEncuentro(null, null, fase,1);
+      let encuentro = await createEncuentro(null, null, fase,1);
       partido.push(encuentro);
     }
     return partido;
   }
 };
 
-var selecEncuentros = function(arregloEquipos, numeroLlaves, fase){
+var selecEncuentros = async function(arregloEquipos, numeroLlaves, fase){
   let equipos = arregloEquipos;
   let iteration = numeroLlaves;
   let respuesta = [];
   let partidos = [];
   let partido = null;
   let i=1;
+  
   while (equipos.length > 0 && i <=iteration ){
     let random = Math.floor(Math.random() * equipos.length);
     let equipo1 = equipos.splice(random,1);
     let random2 = Math.floor(Math.random() * equipos.length);
     let equipo2 = equipos.splice(random2, 1);
-    partido = createEncuentro(equipo1[0], equipo2[0], fase, i + 1);
+    partido = await createEncuentro(equipo1[0], equipo2[0], fase, i + 1);
+    //console.log("Equipos en el modulo partidos  es:",partidos ,equipo1[0], equipo2[0],undefined)
     partidos.push(partido);
     i++;
   }
@@ -245,6 +247,19 @@ var selecEncuentros = function(arregloEquipos, numeroLlaves, fase){
   return respuesta;
 }
 
+var createPartidosLiga = async function(equipos){
+  let tamaño = equipos.length;
+  let arregloPartidos= [];
+  for (let i = 0; i < equipos.length; i++) {
+    for (let j = i; j < equipos.length; j++) {
+      if(i != j){
+        partido = await createEncuentro(equipos[i],equipos[j],1,i);
+        arregloPartidos.push(partido);
+      }      
+    }    
+  }
+  return arregloPartidos;
+}
 module.exports = {
   getEncuentro,
   getListEncuentros,
@@ -252,5 +267,6 @@ module.exports = {
   updateEncuentro,
   deleteEncuentro,
   completaEncuetros,
-  selecEncuentros
+  selecEncuentros,
+  createPartidosLiga
 };

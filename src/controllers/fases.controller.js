@@ -21,7 +21,6 @@ var getFase = function (req, res) {
     });
 }
 
-
 /**va en crear fase, recordar colocar este metodo asincrono,ademas de arreglar el error del schema de fase*/
 var createFase = async function (encuentros, numEquipos, clasificados, fase, listaParti) {
     faseMod = new faseModel({
@@ -43,8 +42,6 @@ var createFase = async function (encuentros, numEquipos, clasificados, fase, lis
         return err;
     }
 }
-
-
 
 var updateFaseExtern = function (req, res) {
     faseModel.findById(req.params.id, function (err, faseMod) {
@@ -73,7 +70,6 @@ var deleteFase = function (req, res) {
         }     
     });
  }
-
 // var updateEquiposFase = function(fase,listaEquipos){
 //     let tamaño =(listaEquipos.length)/2;
 //     faseModel.findById(fase, function (err, faseMod) {
@@ -111,7 +107,6 @@ var deleteFase = function (req, res) {
 //         });
 //     });
 // }
-
 module.exports = {
     deleteFase,
     createFase,
