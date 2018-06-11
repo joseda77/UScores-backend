@@ -5,7 +5,6 @@ const encuentro1Controller = require('./encuentrosTipo1.controller');
 
 let idTorneo = null;
 let deporteTorneo = null;
-let numFaseTorneo = null;
 let tipTorneo = null;
 let listEquipos = null;
 let listPartidos = null;
@@ -13,7 +12,8 @@ let nameTorneo = null;
 let statusTorneo = null;
 
 /* Obtiene la lista de los torneos  */
-var getListTorneos = function(req, res) {
+var getListTorneos = function(req,res) {
+  
   torneosModel.find(function(err, torneosMod) {
     if (err) {
       return res.status(500).json({ errMsg: err });
@@ -24,7 +24,7 @@ var getListTorneos = function(req, res) {
 };
 
 /* Obtiene un solo torneo de acuerdo a su codigo */
-var getTorneo = function(req, res, next) {
+var getTorneo = function(req, res) {
   idTorneo = req.params.codigoTorneo;
   torneosModel.findOne({ codigoTorneo: idTorneo }, function(err, torneosMod) {
     if (err) {
@@ -37,20 +37,25 @@ var getTorneo = function(req, res, next) {
 
 /* Crea todos los torneos  */
 var createTorneo = async function(req, res) {
-  listaEquipos = req.body.listaEquipos;
-  torneoType = req.body.tipoTorneo;
-  listaFases = await createFases(torneoType, listaEquipos);
-  numFases = listaFases.length;
+  const listaEquipos = req.body.listaEquipos;  
+  let torneoType = req.body.tipoTorneo;
+  /**Preguntar porque despues del await se borra el arreglo de equipos re.body.listaEquipos */
+  // let listaFases = await createFases(torneoType, listaEquipos);
+  // let numFases = listaFases.length;  
   var torneosMod = new torneosModel({
     codigoTorneo: req.body.codigoTorneo,
     nombreTorneo: req.body.nombreTorneo,
     deporte: req.body.deporte,
     tipoTorneo: req.body.tipoTorneo,
-    numeroFases: numFases,
+    //numeroFases: numFases,
     adminTorneo: req.user,
     listaEquipos: req.body.listaEquipos, //Cambiar esto por null en caso de que no funcione
-    listaFases: listaFases //Cambiar esto por null en caso de que no funcione
+    //listaFases: listaFases //Cambiar esto por null en caso de que no funcione
   });
+  let listaFases = await createFases(torneoType, listaEquipos);
+  let numFases = listaFases.length;
+  torneosMod.numeroFases = numFases;
+  torneosMod.listaFases = listaFases;
 
   torneosMod.save(function(err) {
     if (err) {
@@ -62,7 +67,7 @@ var createTorneo = async function(req, res) {
 };
 
 /* Actualiza los datos de un torneo */
-var updateTorneo = async function(req, res, next) {
+var updateTorneo = async function(req, res) {
   idTorneo = req.body.codigoTorneo;
   nameTorneo = req.body.nombreTorneo;
   tipTorneo = req.body.tipoTorneo;  
@@ -116,7 +121,7 @@ var updateTorneo = async function(req, res, next) {
 
 
 /* Borra un torneo de la BD*/
-var deleteTorneo = function(req, res, next) {
+var deleteTorneo = function(req, res) {
   idTorneo = req.params.codigoTorneo;
   torneosModel.findOne({ codigoTorneo: idTorneo }, function(err, torneosMod) {
     torneosMod.remove(function(err) {
@@ -227,8 +232,9 @@ var createFases = async function (torneoType, equiposList) {
       /**Agregar las fases que faltan 
         y colocarle una bandera a la creacion fase2 para saber cuantas fases mas se tiene que crear aqui */
       for (let i = consecutivoFase+1; i <= numeroFases; i++) {
+        //console.log("Entra aqui", numeroEquipos, i, numeroFases);
         numeroEquipos = numeroEquipos / 2;
-        let numEquiAvanzan = numeroEquipos;
+        let numEquiAvanzan = Math.ceil(numeroEquipos / 2);
         let arregloParti = await encuentro1Controller.completaEncuetros(numEquiAvanzan, [], i);
         fase = await fasesController.createFase(numEquiAvanzan, numeroEquipos,numEquiAvanzan, i,arregloParti);
         arregloDeFases.push(fase);

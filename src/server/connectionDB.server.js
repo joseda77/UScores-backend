@@ -1,8 +1,8 @@
 //variable que almacena las funcionalidades de mongoose
 const mongoose = require('mongoose'); 
 const Schema = mongoose.Schema;
-//const url = 'mongodb://localhost/bduscores';
-const url = "mongodb://jose:1234560@ds159129.mlab.com:59129/bduscores";
+const url = 'mongodb://localhost/bduscores';
+//const url = "mongodb://jose:1234560@ds159129.mlab.com:59129/bduscores";
 
 //Función de conexión a la BD
 const functionConnect = function() {

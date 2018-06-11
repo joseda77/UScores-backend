@@ -109,7 +109,7 @@ var updateEncuentro = function(req, res) {
        * El uno indica si el juego se esta jugando (1 == En juego).
        * El dos indica que el encuentro ya fue disputado (2 == jugado).
        */
-      if(estadoEncuentro == 0){
+      if(estadoEncuentro == 0){ // EL encuentro está por jugarse
         if(faseEncuentro != null || faseEncuentro!= undefined){
           encuentrosMod.fase = faseEncuentro;
         } 
@@ -128,20 +128,20 @@ var updateEncuentro = function(req, res) {
       }else {
         let team1 = encuentrosMod.equipo1;
         let team2 = encuentrosMod.equipo2;
-        // // if (puntajeE1Encuentro == undefined || puntajeE1Encuentro == null) {
-        // //   puntajeE1Encuentro = 0;
-        // //   /** Verfica que la puntuación asginada no sea menor que la que ya esta en la BD, para asi evitar errores */
-        // //   if(puntajeE1Encuentro < encuentrosMod.puntajeEquipo1){
-        // //     puntajeE1Encuentro = encuentrosMod.puntajeEquipo1;
-        // //   }
-        // // }
-        // // if (puntajeE2Encuentro == undefined || puntajeE2Encuentro == null) {
-        // //   puntajeE2Encuentro = 0;
-        // //   /** Verfica que la puntuación asginada no sea menor que la que ya esta en la BD, para asi evitar errores */
-        // //   if (puntajeE2Encuentro < encuentrosMod.puntajeEquipo2) { 
-        // //     puntajeE2Encuentro = encuentrosMod.puntajeEquipo2;
-        // //   }
-        // // }
+        if (puntajeE1Encuentro == undefined || puntajeE1Encuentro == null) {
+          puntajeE1Encuentro = 0;
+          /** Verfica que la puntuación asginada no sea menor que la que ya esta en la BD, para asi evitar errores */
+          if(puntajeE1Encuentro < encuentrosMod.puntajeEquipo1){
+            puntajeE1Encuentro = encuentrosMod.puntajeEquipo1;
+          }
+        }
+        if (puntajeE2Encuentro == undefined || puntajeE2Encuentro == null) {
+          puntajeE2Encuentro = 0;
+          /** Verfica que la puntuación asginada no sea menor que la que ya esta en la BD, para asi evitar errores */
+          if (puntajeE2Encuentro < encuentrosMod.puntajeEquipo2) { 
+            puntajeE2Encuentro = encuentrosMod.puntajeEquipo2;
+          }
+        }
         // // encuentrosMod.puntajeEquipo1 = puntajeE1Encuentro;
         // // encuentrosMod.puntajeEquipo2 = puntajeE2Encuentro;
         // // let puntosEquipo1 = encuentrosMod.puntajeEquipo1;
