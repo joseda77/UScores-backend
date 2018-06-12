@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 var listaPartido = [];
 
 var faseSchema = new Schema({
+    'torneo':{
+        type:String,
+        required:true
+    },
     'numeroEncuentros':{
         type: Number,
         require: true

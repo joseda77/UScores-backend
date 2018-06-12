@@ -37,6 +37,13 @@ var getTorneo = function(req, res) {
 
 /* Crea todos los torneos  */
 var createTorneo = async function(req, res) {
+  if(req.body.codigoTorneo === null || req.body.deporte == null || req.body.tipoTorneo == null
+    || req.body.listaEquipos.length == 0){
+      return res.status(400).json({ errMsg: "Faltan campos por completar"});
+  }
+  if(req.user == null){
+    return res.status(401).json({ errMsg: "Por Favor inicie sesión para crear un torneo" });
+  }
   const listaEquipos = req.body.listaEquipos;  
   let torneoType = req.body.tipoTorneo;
   /**Preguntar porque despues del await se borra el arreglo de equipos re.body.listaEquipos */
@@ -52,7 +59,7 @@ var createTorneo = async function(req, res) {
     listaEquipos: req.body.listaEquipos, //Cambiar esto por null en caso de que no funcione
     //listaFases: listaFases //Cambiar esto por null en caso de que no funcione
   });
-  let listaFases = await createFases(torneoType, listaEquipos);
+  let listaFases = await createFases(torneoType, listaEquipos, torneosMod.codigoTorneo);
   let numFases = listaFases.length;
   torneosMod.numeroFases = numFases;
   torneosMod.listaFases = listaFases;
@@ -119,36 +126,28 @@ var updateTorneo = async function(req, res) {
   }
 };
 
-
 /* Borra un torneo de la BD*/
 var deleteTorneo = function(req, res) {
   idTorneo = req.params.codigoTorneo;
   torneosModel.findOne({ codigoTorneo: idTorneo }, function(err, torneosMod) {
-    torneosMod.remove(function(err) {
-      if (err) {
-        return res.status(500).json({ errMsg: err });
-      } else {
-        return res.status(200).json(torneosMod);
+    if(err){
+      return res.status(500).json({ errMsg: err });
+    }else{
+      if (!(req.user === torneosMod.adminTorneo)) {
+        return res.status(404).json({ errMsg: "Usted no esta autorizado para modificar el torneo" });
       }
-    });
+      torneosMod.remove(function(err) {
+        if (err) {
+          return res.status(500).json({ errMsg: err });
+        } else {
+          return res.status(200).json(torneosMod);
+        }
+      });
+    }
   });
 };
 
-/*
-var perteneceEquipo = async function(nombreUsuario, torneo, equipo){
-  var torneo = torneosModel.findOne({torneo});
-  var listaEquipos = torneo.listaEquipos;
-  for (let i = 0; i <listaEquipos.length; i++) {
-    if(listaEquipos[i] == equipo){
-      var torneoPerteneceUsuario = await usuariosController.perteneceTorneo(nombreUsuario,torneo);
-      if(torneoPerteneceUsuario == true){
-        return true;
-      }
-    }    
-  }
-  return false;
-}*/
-
+/**Retorna un torneo  existente */
 var getModelTorneo = async function(codTorneo){
   var torneo = await torneosModel.findOne({codigoTorneo: codTorneo});
   if(torneo === undefined || torneo == null){
@@ -176,7 +175,7 @@ var defineNumeroFases = async function(numeroEquipos, tipoTorneo){
 /**Metodo que se invoca desde el torneo y crea las fases de acuerdo a una lista de torneos 
  * y un tipo de torneo, utiliza metodos del controlador de fases y el controlador de encuentros1
 */
-var createFases = async function (torneoType, equiposList) {  
+var createFases = async function (torneoType, equiposList, torneo) {  
   //let tipoTorneo =req.body.tipoTorneo;
   //let equipos = req.body.equipos;
   let tipoTorneo = torneoType;
@@ -190,8 +189,8 @@ var createFases = async function (torneoType, equiposList) {
   /**Este if es para cuando se crea una y solo una fase */
   if(tipoTorneo==1 || numeroEquipos==2 || numeroFases==1){
     let numeroEncuentros = (equipos.length) - 1;
-    partidoArray = await encuentro1Controller.createPartidosLiga(equipos);
-    fase = await fasesController.createFase(numeroEncuentros, numeroEquipos,0,1, partidoArray);
+    partidoArray = await encuentro1Controller.createPartidosLiga(equipos,torneo);
+    fase = await fasesController.createFase(numeroEncuentros, numeroEquipos,0,1, partidoArray,torneo);
     arregloDeFases.push(fase);
     return arregloDeFases;
   }else{/**Este if es para cuando se crea dos o mas*/
@@ -205,25 +204,25 @@ var createFases = async function (torneoType, equiposList) {
       partidoArray = [];
       /** El numero de salvados es el numero de equipos que avanzan directo a la siguiente fase */
       if (numSalvados == 0){
-        respuesta = await encuentro1Controller.selecEncuentros(equipos, numeroEquipos/2,1);
+        respuesta = await encuentro1Controller.selecEncuentros(equipos, numeroEquipos/2,1,torneo);
         partidoArray=respuesta[0];
-        fase = await fasesController.createFase(numeroEncuentros, numeroEncuentros*2,numeroEncuentros,1, partidoArray);
+        fase = await fasesController.createFase(numeroEncuentros, numeroEncuentros*2,numeroEncuentros,1, partidoArray,torneo);
         arregloDeFases.push(fase);
         consecutivoFase = 1;  
       }else {
         partidoArray = [];
-        respuesta = await encuentro1Controller.selecEncuentros(equipos,numeroEncuentros,1);
+        respuesta = await encuentro1Controller.selecEncuentros(equipos,numeroEncuentros,1,torneo);
         partidoArray=respuesta[0];      
-        fase = await fasesController.createFase(numeroEncuentros, numeroEncuentros*2,numeroEncuentros,1, partidoArray);
+        fase = await fasesController.createFase(numeroEncuentros, numeroEncuentros*2,numeroEncuentros,1, partidoArray,torneo);
         arregloDeFases.push(fase);
         consecutivoFase = 1;      
         numeroEquipos = 2 ** Math.floor(Math.log2(numeroEquipos));
         let numLlaves = numeroEquipos/2;
         tamaño = equipos.length;
-        let respuesta2 = await encuentro1Controller.selecEncuentros(equipos, numLlaves,2);
+        let respuesta2 = await encuentro1Controller.selecEncuentros(equipos, numLlaves,2,torneo);
         partidoArray= respuesta2[0];
-        partidoArray = await encuentro1Controller.completaEncuetros(numLlaves,partidoArray,2);
-        fase = await fasesController.createFase(numLlaves, numeroEquipos, numLlaves, 2,partidoArray);
+        partidoArray = await encuentro1Controller.completaEncuetros(numLlaves,partidoArray,2,torneo);
+        fase = await fasesController.createFase(numLlaves, numeroEquipos, numLlaves, 2,partidoArray,torneo);
         arregloDeFases.push(fase);
         consecutivoFase++;
         numeroEquipos= tamaño;
@@ -235,8 +234,8 @@ var createFases = async function (torneoType, equiposList) {
         //console.log("Entra aqui", numeroEquipos, i, numeroFases);
         numeroEquipos = numeroEquipos / 2;
         let numEquiAvanzan = Math.ceil(numeroEquipos / 2);
-        let arregloParti = await encuentro1Controller.completaEncuetros(numEquiAvanzan, [], i);
-        fase = await fasesController.createFase(numEquiAvanzan, numeroEquipos,numEquiAvanzan, i,arregloParti);
+        let arregloParti = await encuentro1Controller.completaEncuetros(numEquiAvanzan, [], i,torneo);
+        fase = await fasesController.createFase(numEquiAvanzan, numeroEquipos,numEquiAvanzan, i,arregloParti,torneo);
         arregloDeFases.push(fase);
       }
     }
@@ -278,7 +277,6 @@ var setPartidos= function(numeroEquipos, numerodeFases) {
     }
   }
 };
-
 
 module.exports = {
   getListTorneos,

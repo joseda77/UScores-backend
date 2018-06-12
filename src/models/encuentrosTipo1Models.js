@@ -13,6 +13,10 @@ var encuentroSchema = new Schema({
         type: String,
         required: true
     },
+    'torneo':{
+        type: String,
+        required: true
+    },
     'fase':{
         type: Number,
         required: true

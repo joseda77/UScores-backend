@@ -38,8 +38,9 @@ var getEncuentro = function(req, res) {
 };
 
 
-var createEncuentro = async function(equipo1Encuentro,equipo2Encuentro,faseEncuentro,consecEncuentro){
+var createEncuentro = async function(equipo1Encuentro,equipo2Encuentro,faseEncuentro,consecEncuentro,torneo){
   var encuentrosMod = new encuentrosModel({
+    torneo:torneo,
     consecutivo: consecEncuentro,
     fase: faseEncuentro,
     equipo1: equipo1Encuentro,
@@ -121,7 +122,7 @@ var updateEncuentro = function(req, res) {
         }
         if(fecha != null || fecha != undefined){
           if (fecha <= Date.now()) {
-            return res.status(404).json({ errMsg: "Error al crear el encuentro, la fecha no puede ser igual o menor a la fecha actual" });
+            return res.status(404).json({ errMsg: "Error al actualizar el encuentro, la fecha no puede ser igual o menor a la fecha actual" });
           }
           encuentrosMod.fechaDeJuego = fecha;
         }
@@ -211,20 +212,20 @@ var getModeloEquipo = async function (codEquipo) {
   let equipo = await equi
 }
 
-var completaEncuetros = async function(numeroPartidos,partido,fase){
+var completaEncuetros = async function(numeroPartidos,partido,fase,torneo){
   var tamaño = partido.length;
   if (numeroPartidos == tamaño) { 
     return partido;
   } else if (tamaño < numeroPartidos) {
     for (let i = tamaño + 1; i <= numeroPartidos; i++) {
-      let encuentro = await createEncuentro(null, null, fase,1);
+      let encuentro = await createEncuentro(null, null, fase,1,torneo);
       partido.push(encuentro);
     }
     return partido;
   }
 };
 
-var selecEncuentros = async function(arregloEquipos, numeroLlaves, fase){
+var selecEncuentros = async function(arregloEquipos, numeroLlaves, fase,torneo){
   let equipos = arregloEquipos;
   let iteration = numeroLlaves;
   let respuesta = [];
@@ -237,7 +238,7 @@ var selecEncuentros = async function(arregloEquipos, numeroLlaves, fase){
     let equipo1 = equipos.splice(random,1);
     let random2 = Math.floor(Math.random() * equipos.length);
     let equipo2 = equipos.splice(random2, 1);
-    partido = await createEncuentro(equipo1[0], equipo2[0], fase, i + 1);
+    partido = await createEncuentro(equipo1[0], equipo2[0], fase, i + 1,torneo);
     //console.log("Equipos en el modulo partidos  es:",partidos ,equipo1[0], equipo2[0],undefined)
     partidos.push(partido);
     i++;
@@ -247,13 +248,13 @@ var selecEncuentros = async function(arregloEquipos, numeroLlaves, fase){
   return respuesta;
 }
 
-var createPartidosLiga = async function(equipos){
+var createPartidosLiga = async function(equipos,torneo){
   let tamaño = equipos.length;
   let arregloPartidos= [];
   for (let i = 0; i < equipos.length; i++) {
     for (let j = i; j < equipos.length; j++) {
       if(i != j){
-        partido = await createEncuentro(equipos[i],equipos[j],1,i);
+        partido = await createEncuentro(equipos[i],equipos[j],1,i,torneo);
         arregloPartidos.push(partido);
       }      
     }    

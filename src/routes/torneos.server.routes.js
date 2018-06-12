@@ -10,6 +10,5 @@ app.get('/torneos/:codigoTorneo',torneosController.getTorneo);
 app.post('/torneos',auth,torneosController.createTorneo);
 app.put('/torneos/:codigoTorneo',auth,torneosController.updateTorneo);
 app.delete('/torneos/:codigoTorneo',auth,torneosController.deleteTorneo);
-app.post('/create',torneosController.createFases);
 
 module.exports = app;

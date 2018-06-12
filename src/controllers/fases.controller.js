@@ -22,8 +22,9 @@ var getFase = function (req, res) {
 }
 
 /**va en crear fase, recordar colocar este metodo asincrono,ademas de arreglar el error del schema de fase*/
-var createFase = async function (encuentros, numEquipos, clasificados, fase, listaParti) {
+var createFase = async function (encuentros, numEquipos, clasificados, fase, listaParti,torneo) {
     faseMod = new faseModel({
+        torneo:torneo,
         numeroEncuentros: encuentros,
         numeroEquipos: numEquipos,
         numeroDeClasificados: clasificados, /**Numero de clasificados por fase */
